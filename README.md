@@ -36,8 +36,9 @@ installation command after an explicit maintainer release.
 
 CUDA, FlashAttention, Triton and specialized recurrent kernels are not needed to
 import the library or run the reference CPU workflow. API and CLI defaults use
-`device="cpu"`. `cuda`, `mps` and `auto` are explicit accelerator choices; neither
-CUDA nor MPS execution has been validated for this release.
+`device="cpu"`. `cuda`, `mps` and `auto` are explicit accelerator choices.
+MPS fp32 has passed bounded validation on an M3 Pro; CUDA remains unvalidated.
+See [MPS validation](docs/mps.md) for commands, results and limits.
 
 ## Run the offline tiny example
 

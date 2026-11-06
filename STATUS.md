@@ -1,11 +1,11 @@
 # BytePFT 0.1.0 status
 
-Last updated: 2026-11-06. Local execution used CPU only; no GPU training or PyPI
-publication was performed. This is an experimental reference library, with a
+Last updated: 2026-11-06. CPU and explicitly authorized MPS fp32 validation have been performed.
+Full pretrained adaptation and PyPI publication have not been performed. This is an experimental reference library, with a
 working end-to-end tiny workflow and a real pretrained-backbone integration test.
 It is not a validated reproduction of the full research architecture.
 
-Local verification: **197 tests passed, 1 opt-in pretrained test skipped**; the
+Combined CPU/MPS verification: **205 tests passed, 1 opt-in pretrained test skipped**; the
 pretrained smoke script was executed separately. Ruff and mypy (31 source files)
 pass. Wheel and source distributions build and pass `twine check`.
 The built wheel also installs and exposes its CLI in an isolated environment.
@@ -58,10 +58,17 @@ Actual source-tokenizer alignment was also checked on multilingual text, split
 UTF-8 code points, emoji, whitespace and NUL. Neither this nor a single gradient
 step establishes successful pretrained-model adaptation.
 
+An explicitly authorized **MPS fp32** run passed eight dedicated GPU cases and
+the combined 205-test suite with CPU fallback disabled. Tiny training byte NLL
+fell from **5.762887 to 0.001340**. Real Qwen3-0.6B-Base also passed a frozen-global
+gradient step and exact save/load on MPS. Full pretrained Stage 2 and adaptation
+remain unrun. See the [MPS guide](docs/mps.md), [test report](docs/results/mps_validation.json)
+and [pretrained result](docs/results/qwen_mps_smoke.json).
+
 ## Implemented but unvalidated here
 
-- CUDA bf16/fp16 AMP (including GradScaler), CUDA memory measurements and MPS
-  fp32 execution. CPU tests do not establish accelerator compatibility or speed.
+- CUDA bf16/fp16 AMP (including GradScaler), CUDA memory measurements and
+  MPS mixed precision. MPS validation currently covers fp32 only.
 - Optional remote Hugging Face dataset ingestion and activation checkpointing
   in long pretrained runs. CPU-scale activation checkpointing is tested.
 - PyPI Trusted Publishing requires maintainer configuration and an explicit

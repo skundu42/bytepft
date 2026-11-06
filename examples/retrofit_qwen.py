@@ -22,7 +22,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="Qwen/Qwen3-0.6B-Base")
     parser.add_argument("--dataset", required=True)
-    parser.add_argument("--device", choices=("cpu", "cuda"), required=True)
+    parser.add_argument("--device", choices=("cpu", "cuda", "mps"), required=True)
     parser.add_argument("--precision", choices=("fp32", "bf16", "fp16"))
     parser.add_argument(
         "--config", default=str(Path(__file__).resolve().parents[1] / "configs/qwen3_06b.yaml")
@@ -37,8 +37,8 @@ def main() -> None:
     if args.precision is not None:
         architecture.precision = args.precision
         architecture.__post_init__()
-    if args.device == "cpu" and architecture.precision != "fp32":
-        parser.error("This preset uses accelerator precision; pass --precision fp32 for CPU.")
+    if args.device in {"cpu", "mps"} and architecture.precision != "fp32":
+        parser.error("This preset uses accelerator precision; pass --precision fp32 for CPU/MPS.")
     training = BytePFTTrainingConfig.from_dict(settings["training"])
     training.output_dir = args.output
     if args.stage1_steps is not None:

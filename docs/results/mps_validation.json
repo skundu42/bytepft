@@ -1,0 +1,42 @@
+{
+  "verified_at_utc": "2026-11-06T12:39:24.759660+00:00",
+  "device": "mps",
+  "precision": "fp32",
+  "gpu_used": true,
+  "hardware": "Apple M3 Pro, 18 GB unified memory",
+  "torch_version": "2.15.0",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "cpu_fallback_enabled": false,
+  "mps_tests_passed": 8,
+  "combined_suite": {
+    "passed": 205,
+    "skipped": 1,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 6.591
+  },
+  "tiny_training": {
+    "initial_nll": 5.762886895073785,
+    "final_nll": 0.0013396944850683212
+  },
+  "checks": [
+    "CPU/MPS forward agreement",
+    "causality",
+    "fixed and learned boundaries",
+    "last and mean pooling",
+    "right-padded batches",
+    "cached/full byte generation",
+    "frozen Stage 1",
+    "aligned teacher/distillation Stage 1",
+    "unfrozen tiny Stage 2",
+    "optimizer and RNG checkpoint resumption",
+    "checkpoint persistence",
+    "tiny-corpus loss reduction"
+  ],
+  "limits": [
+    "fp32 only",
+    "real pretrained Stage 2 not run",
+    "full adaptation and language quality not evaluated",
+    "no sustained-workload throughput or peak-memory claim"
+  ]
+}

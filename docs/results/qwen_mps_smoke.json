@@ -1,0 +1,42 @@
+{
+  "source_model": "Qwen/Qwen3-0.6B-Base",
+  "device": "mps",
+  "precision": "fp32",
+  "gpu_used": true,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "cpu_architecture": "arm64",
+  "threads": 2,
+  "torch_version": "2.15.0",
+  "purpose": "one real frozen-global gradient step and checkpoint round trip",
+  "full_adaptation_completed": false,
+  "quality_evaluated": false,
+  "load_seconds": 2.9005929169943556,
+  "source_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+  "original_parameters": 596049920,
+  "trainable_parameters": 45204,
+  "loss": 6.2976508140563965,
+  "logits_shape": [
+    1,
+    4,
+    259
+  ],
+  "finite_local_gradients": true,
+  "global_parameters_unchanged": true,
+  "local_projection_updated": true,
+  "mps_allocated_bytes_after_step": 2400221696,
+  "mps_driver_allocated_bytes_after_step": 2830876672,
+  "gradient_step_seconds": 1.710946667008102,
+  "save_seconds": 2.3256196249858476,
+  "checkpoint_bytes": 2384424336,
+  "reload_seconds": 16.120084707974456,
+  "round_trip_max_abs_logit_difference": 0.0,
+  "round_trip_matches": true,
+  "training_status": {
+    "stage1_steps": 1,
+    "stage2_steps": 0,
+    "stage1": "smoke_step_only",
+    "stage2": "not_started",
+    "trained": false,
+    "quality_validated": false
+  }
+}

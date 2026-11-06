@@ -1,8 +1,8 @@
-"""Download Qwen3-0.6B-Base, run one CPU gradient step, and verify persistence.
+"""Download Qwen3-0.6B-Base, run one device-selected gradient step, and verify persistence.
 
 This is an integration check, not a completed adaptation experiment. It downloads
 approximately 1.2 GB and writes approximately 2.4 GB of fp32 checkpoint weights.
-No GPU or MPS operation is performed. Run with ``uv run python
+CPU is the default. Pass --device mps explicitly for an Apple GPU check. Run with ``uv run python
 examples/qwen_cpu_smoke.py --output outputs/qwen-cpu-smoke``.
 """
 
@@ -30,8 +30,18 @@ def run_smoke(
     source_model: str = "Qwen/Qwen3-0.6B-Base",
     local_files_only: bool = False,
     threads: int = 2,
+    device: str = "cpu",
 ) -> dict[str, Any]:
-    """Execute a real, small integration check with all tensors on CPU."""
+    """Execute a bounded integration check on the explicitly selected device."""
+    if device not in {"cpu", "mps"}:
+        raise ValueError("This smoke check supports only cpu or mps")
+    if device == "mps" and not torch.backends.mps.is_available():
+        raise RuntimeError("MPS is unavailable")
+
+    def synchronize() -> None:
+        if device == "mps":
+            torch.mps.synchronize()
+
     if threads < 1:
         raise ValueError("threads must be positive.")
     torch.set_num_threads(threads)
@@ -40,9 +50,9 @@ def run_smoke(
     output.mkdir(parents=True, exist_ok=True)
     report: dict[str, Any] = {
         "source_model": source_model,
-        "device": "cpu",
+        "device": device,
         "precision": "fp32",
-        "gpu_used": False,
+        "gpu_used": device == "mps",
         "platform": platform.platform(),
         "cpu_architecture": platform.machine(),
         "threads": threads,
@@ -53,8 +63,9 @@ def run_smoke(
     }
     started = time.perf_counter()
     adapter = QwenGlobalAdapter.from_pretrained(
-        source_model, device="cpu", precision="fp32", local_files_only=local_files_only
+        source_model, device=device, precision="fp32", local_files_only=local_files_only
     )
+    synchronize()
     report["load_seconds"] = time.perf_counter() - started
     report["source_revision"] = adapter.source_revision
     report["original_parameters"] = adapter.original_parameter_count
@@ -65,7 +76,7 @@ def run_smoke(
     )
     del adapter
     model.train()
-    assert all(parameter.device.type == "cpu" for parameter in model.parameters())
+    assert all(parameter.device.type == device for parameter in model.parameters())
     versions = {
         name: parameter._version for name, parameter in model.global_adapter.named_parameters()
     }
@@ -73,8 +84,8 @@ def run_smoke(
     local_parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
     report["trainable_parameters"] = sum(parameter.numel() for parameter in local_parameters)
     optimizer = torch.optim.AdamW(local_parameters, lr=1e-3)
-    ids = torch.tensor([[257, 72, 105, 258]], dtype=torch.long)
-    labels = torch.tensor([[72, 105, 258, -100]], dtype=torch.long)
+    ids = torch.tensor([[257, 72, 105, 258]], dtype=torch.long, device=device)
+    labels = torch.tensor([[72, 105, 258, -100]], dtype=torch.long, device=device)
     started = time.perf_counter()
     result = model(ids, labels=labels)
     assert result.loss is not None
@@ -106,12 +117,16 @@ def run_smoke(
         )
     report["global_parameters_unchanged"] = frozen_unchanged
     report["local_projection_updated"] = local_updated
+    synchronize()
+    if device == "mps":
+        report["mps_allocated_bytes_after_step"] = torch.mps.current_allocated_memory()
+        report["mps_driver_allocated_bytes_after_step"] = torch.mps.driver_allocated_memory()
     report["gradient_step_seconds"] = time.perf_counter() - started
     # A single manual smoke step is intentionally insufficient for generation.
     model.training_status.update(stage1_steps=1, stage1="smoke_step_only", trained=False)
     model.eval()
     with torch.no_grad():
-        expected_logits = model(ids).logits.detach().clone()
+        expected_logits = model(ids).logits.detach().cpu().clone()
     started = time.perf_counter()
     model.save_pretrained(str(output))
     report["save_seconds"] = time.perf_counter() - started
@@ -119,11 +134,14 @@ def run_smoke(
     # Release the source model and all optimizer/graph references before loading.
     del result, optimizer, gradients, local_parameters, local_before, model
     gc.collect()
+    if device == "mps":
+        torch.mps.empty_cache()
     started = time.perf_counter()
-    loaded = load_pretrained(output, device="cpu")
+    loaded = load_pretrained(output, device=device)
+    synchronize()
     report["reload_seconds"] = time.perf_counter() - started
     with torch.no_grad():
-        actual_logits = loaded(ids).logits
+        actual_logits = loaded(ids).logits.cpu()
     torch.testing.assert_close(actual_logits, expected_logits, atol=1e-6, rtol=1e-6)
     report["round_trip_max_abs_logit_difference"] = float(
         (actual_logits - expected_logits).abs().max()
@@ -132,6 +150,8 @@ def run_smoke(
     report["training_status"] = dict(loaded.training_status)
     del loaded
     gc.collect()
+    if device == "mps":
+        torch.mps.empty_cache()
     (output / "smoke_report.json").write_text(
         json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
@@ -144,6 +164,7 @@ def main() -> None:
     parser.add_argument("--source-model", default="Qwen/Qwen3-0.6B-Base")
     parser.add_argument("--local-files-only", action="store_true")
     parser.add_argument("--threads", type=int, default=2)
+    parser.add_argument("--device", choices=("cpu", "mps"), default="cpu")
     args = parser.parse_args()
     print(json.dumps(run_smoke(**vars(args)), indent=2))
 

@@ -129,8 +129,8 @@ starting mixed-precision training upcasts any lower-precision loaded parameters,
 so its memory requirements exceed merely loading half-precision weights.
 Autocast wraps training loss computation; validation and saved master parameters
 are fp32. The source-loading precision also controls the initial inference dtype.
-The MPS reference training path is fp32 only. CUDA/MPS execution and numerical
-stability have not been validated.
+The MPS reference training path is fp32 only and has passed bounded validation
+on an M3 Pro. CUDA remains unvalidated. See [MPS validation](mps.md).
 
 ## Checkpoint contents
 
@@ -191,8 +191,8 @@ remains the honest status until a separate quality experiment establishes more.
 
 CPU is the default for every public workflow. `device="auto"` explicitly allows
 an available CUDA/MPS accelerator; choose `device="cuda"` or `"mps"` only when you
-intend to use one. No GPU was used for the checked-in validation results. Full
-pretrained adaptation was not executed on this device.
+intend to use one. CPU and explicit MPS fp32 checks have been run on this device;
+full pretrained adaptation has not been executed.
 
 Evaluate held-out text with `evaluate_model` or `bytepft evaluate`. NLL is summed
 only for raw-byte targets and divided by their count; bits per byte is NLL divided

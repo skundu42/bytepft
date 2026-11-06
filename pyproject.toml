@@ -42,7 +42,7 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["integration: downloads a real pretrained checkpoint (opt-in)", "gpu: requires explicit GPU execution"]
+markers = ["integration: downloads a real pretrained checkpoint (opt-in)", "gpu: requires explicit GPU execution", "mps: explicit Apple GPU validation (RUN_MPS_TESTS=1)"]
 
 [tool.mypy]
 python_version = "3.11"

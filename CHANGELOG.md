@@ -36,8 +36,8 @@ does not establish retained source-model quality.
   the cited Nature method; exact mLSTM/fused-boundary support is not implemented.
 - Full pretrained adaptation, downstream task quality and matched source-model
   performance comparisons have not been executed.
-- CUDA and Apple MPS are explicit device options, but execution on them has not
-  been validated. CPU is the default.
+- MPS fp32 passed bounded training/inference and real pretrained integration
+  checks on an M3 Pro. CUDA and MPS mixed precision remain unvalidated. CPU is the default.
 - Inference supports a single generation stream; batched generation and
   distributed training are not implemented.
 - Source embedding/output matrices are retained in checkpoints for Stage 1;
