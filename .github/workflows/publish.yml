@@ -1,60 +1,65 @@
-name: Build or publish a release
+name: Publish to PyPI
 
-# Publishing requires an explicit maintainer dispatch with publish=true.
-# Configure the PyPI Trusted Publisher for this workflow and the pypi environment.
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
-      version:
-        description: Exact project version from pyproject.toml
+      tag:
+        description: Version to build without publishing (for example, v0.1.0)
         required: true
+        default: v0.1.0
         type: string
-      publish:
-        description: Publish checked distributions to PyPI
-        required: true
-        default: false
-        type: boolean
 
 permissions:
   contents: read
 
+concurrency:
+  group: pypi-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: macos-15
-    timeout-minutes: 20
+    timeout-minutes: 15
     env:
-      RELEASE_VERSION: ${{ inputs.version }}
+      RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
       UV_PYTHON: "3.13"
       HF_HUB_OFFLINE: "1"
       OMP_NUM_THREADS: "2"
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.13"
       - run: uv sync --frozen
-      - name: Check requested version
+      - name: Set package version from release tag
+        id: prepare
+        run: uv run --frozen python scripts/prepare_release.py
+      - run: uv sync --frozen
+      - name: Verify installed version
+        env:
+          EXPECTED_VERSION: ${{ steps.prepare.outputs.version }}
         run: |
           uv run --frozen python - <<'PY'
           import os
-          import tomllib
-          from pathlib import Path
-          version = tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"]
-          if os.environ["RELEASE_VERSION"] != version:
-              raise SystemExit("Requested version differs from pyproject.toml")
+          from importlib.metadata import version
+          from bytepft import __version__
+          assert version("bytepft") == __version__ == os.environ["EXPECTED_VERSION"]
           PY
       - run: uv run --frozen pytest
-      - run: uv run --frozen ruff check .
-      - run: uv run --frozen mypy
-      - run: uv build
+      - run: uv build --no-sources
       - run: uvx twine check dist/*
       - uses: actions/upload-artifact@v4
         with:
           name: release-distributions
           path: dist/*
           if-no-files-found: error
+
   publish:
-    if: ${{ inputs.publish }}
+    if: github.event_name == 'release'
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -67,5 +72,5 @@ jobs:
         with:
           name: release-distributions
           path: dist/
-      - name: Publish using PyPI Trusted Publishing
+      - name: Publish with PyPI Trusted Publishing
         uses: pypa/gh-action-pypi-publish@release/v1

@@ -28,7 +28,7 @@ benchmark = ["psutil>=6"]
 bytepft = "bytepft.cli:main"
 
 [dependency-groups]
-dev = ["pytest>=8", "ruff>=0.9", "mypy>=1.14", "types-PyYAML>=6"]
+dev = ["pytest>=8", "ruff>=0.9", "mypy>=1.14", "types-PyYAML>=6", "packaging>=24"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/bytepft"]

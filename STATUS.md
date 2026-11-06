@@ -5,12 +5,15 @@ Full pretrained adaptation and PyPI publication have not been performed. This is
 working end-to-end tiny workflow and a real pretrained-backbone integration test.
 It is not a validated reproduction of the full research architecture.
 
-Combined CPU/MPS verification: **205 tests passed, 1 opt-in pretrained test skipped**; the
-pretrained smoke script was executed separately. Ruff and mypy (31 source files)
-pass. Wheel and source distributions build and pass `twine check`.
+Latest CPU verification: **209 tests passed, 9 explicit GPU/pretrained cases skipped**.
+The earlier combined CPU/MPS run passed 205 cases, with one pretrained case skipped;
+the real pretrained smoke scripts were executed separately. Ruff and mypy pass.
+Wheel and source distributions build and pass `twine check`.
 The built wheel also installs and exposes its CLI in an isolated environment.
-GitHub CI passes on Python 3.11, 3.12 and 3.13;
-the [recorded run](docs/results/ci_validation.json) identifies the verified commit.
+The previous GitHub matrix passed on Python 3.11, 3.12 and 3.13;
+the [recorded run](docs/results/ci_validation.json) identifies that commit.
+Regular CI now uses one Python 3.13 CPU job for tests and Ruff. Release builds
+and publishing checks run separately when a GitHub release is published.
 
 ## Implemented and tested
 
@@ -71,8 +74,9 @@ and [pretrained result](docs/results/qwen_mps_smoke.json).
   MPS mixed precision. MPS validation currently covers fp32 only.
 - Optional remote Hugging Face dataset ingestion and activation checkpointing
   in long pretrained runs. CPU-scale activation checkpointing is tested.
-- PyPI Trusted Publishing requires maintainer configuration and an explicit
-  publishing action. It has not been configured or executed here.
+- PyPI Trusted Publishing requires one-time account configuration. Once configured,
+  publishing a GitHub release automatically publishes the version from its tag.
+  A build-only manual dispatch can validate the release without uploading to PyPI.
 
 ## Not run or not supported
 

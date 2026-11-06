@@ -326,6 +326,7 @@ training = [
 [package.dev-dependencies]
 dev = [
     { name = "mypy" },
+    { name = "packaging" },
     { name = "pytest" },
     { name = "ruff" },
     { name = "types-pyyaml" },
@@ -346,6 +347,7 @@ provides-extras = ["training", "benchmark"]
 [package.metadata.requires-dev]
 dev = [
     { name = "mypy", specifier = ">=1.14" },
+    { name = "packaging", specifier = ">=24" },
     { name = "pytest", specifier = ">=8" },
     { name = "ruff", specifier = ">=0.9" },
     { name = "types-pyyaml", specifier = ">=6" },

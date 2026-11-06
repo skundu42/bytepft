@@ -10,6 +10,7 @@ import torch
 from safetensors import SafetensorError
 from safetensors.torch import load_model, save_model
 
+from bytepft._version import __version__
 from bytepft.adapters.qwen import QwenGlobalAdapter
 from bytepft.config import BytePFTConfig
 from bytepft.exceptions import CheckpointError
@@ -35,7 +36,7 @@ def save_pretrained(model: ByteModel, directory: str | Path) -> None:
     os.replace(temporary, weights_path)
     metadata = {
         "format_version": FORMAT_VERSION,
-        "bytepft_version": "0.1.0",
+        "bytepft_version": __version__,
         "saved_at": datetime.now(UTC).isoformat(),
         "source_model": model.global_adapter.source_model_id,
         "source_revision": model.global_adapter.source_revision,

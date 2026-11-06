@@ -71,14 +71,14 @@ training data in a public report.
 
 ## Release checklist
 
-1. Update the version and [CHANGELOG.md](CHANGELOG.md).
+1. Update [CHANGELOG.md](CHANGELOG.md) and choose a release tag such as `v0.1.0`.
 2. Run the ordinary CPU suite, Ruff, mypy and `uv build`.
 3. Inspect wheel/sdist contents and install the wheel into a clean environment.
 4. Review [STATUS.md](STATUS.md), examples and measured results for accurate claims.
-5. Configure the PyPI Trusted Publisher for `.github/workflows/publish.yml` and
-   the protected `pypi` environment. Dispatch the workflow with the exact project
-   version to build distributions. Publication requires an explicit
-   `publish=true` maintainer dispatch; its default is false. Ordinary development
-   and test runs must never publish to PyPI.
+5. Complete the one-time [PyPI setup](docs/releases.md), then publish a GitHub
+   release from the tested commit. The release tag sets the package version and
+   triggers publication automatically. A manual workflow dispatch builds and
+   tests a candidate without publishing. Ordinary pushes and pull requests do
+   not publish packages.
 
 Do not add fabricated authorship or automatic co-author trailers to commits.
