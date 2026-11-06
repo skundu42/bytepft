@@ -1,0 +1,8 @@
+BytePFT
+Copyright 2026 BytePFT contributors
+
+Original BytePFT code is licensed under Apache-2.0.
+Research attribution: Minixhofer et al., Retrofitting language models to operate over bytes,
+Nature (2026), https://www.nature.com/articles/s41586-026-11111-4
+BytePFT is an independent reference implementation of the cited research.
+Qwen model weights and Hugging Face dependencies retain their respective licenses.

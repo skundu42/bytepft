@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bytepft"
+version = "0.1.0"
+description = "Retrofitting language models, one byte at a time."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{name = "BytePFT contributors"}]
+keywords = ["pytorch", "language-model", "utf-8", "distillation"]
+classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Topic :: Scientific/Engineering :: Artificial Intelligence"]
+dependencies = ["torch>=2.6,<3", "transformers>=4.57.6,<5", "safetensors>=0.5", "pyyaml>=6"]
+
+[project.optional-dependencies]
+training = ["datasets>=3", "accelerate>=1"]
+benchmark = ["psutil>=6"]
+
+[project.scripts]
+bytepft = "bytepft.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.9", "mypy>=1.14", "types-PyYAML>=6"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bytepft"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: downloads a real pretrained checkpoint (opt-in)", "gpu: requires explicit GPU execution"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src/bytepft"]
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["transformers.*", "torch.*"]
+follow_imports = "skip"
