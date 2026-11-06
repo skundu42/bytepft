@@ -1,0 +1,23 @@
+{
+  "verified_at_utc": "2026-11-06T12:29:19.667580+00:00",
+  "source_commit": "a47ce0df54bda633a1d23c9096f599cc6388c3dc",
+  "conclusion": "success",
+  "run_url": "https://github.com/skundu42/bytepft/actions/runs/42217860675",
+  "jobs": [
+    {
+      "name": "CPU / Python 3.12",
+      "conclusion": "success",
+      "url": "https://github.com/skundu42/bytepft/actions/runs/42217860675/job/127892264428"
+    },
+    {
+      "name": "CPU / Python 3.11",
+      "conclusion": "success",
+      "url": "https://github.com/skundu42/bytepft/actions/runs/42217860675/job/127892264828"
+    },
+    {
+      "name": "CPU / Python 3.13",
+      "conclusion": "success",
+      "url": "https://github.com/skundu42/bytepft/actions/runs/42217860675/job/127892264836"
+    }
+  ]
+}

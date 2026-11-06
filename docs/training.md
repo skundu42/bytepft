@@ -176,6 +176,9 @@ The model architecture is checked before restoring parameters. Training state
 restores the optimizer/scheduler when continuing that stage and creates the
 appropriate optimizer when crossing the Stage 1/Stage 2 boundary. CPU tests
 compare final fp32 parameters and history exactly against a continuous run.
+Stages that reached their target or stopped early remain finished when resumed;
+resumption does not take an extra optimizer step. Terminal checkpoints are
+finalized with evaluation metrics and can be written to the new output directory.
 Cross-hardware/dtype reproducibility and accelerator RNG resumption have not been
 validated; see `STATUS.md` for tested dtype combinations.
 

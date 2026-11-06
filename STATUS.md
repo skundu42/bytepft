@@ -5,9 +5,12 @@ publication was performed. This is an experimental reference library, with a
 working end-to-end tiny workflow and a real pretrained-backbone integration test.
 It is not a validated reproduction of the full research architecture.
 
-Local verification: **193 tests passed, 1 opt-in pretrained test skipped**; the
+Local verification: **197 tests passed, 1 opt-in pretrained test skipped**; the
 pretrained smoke script was executed separately. Ruff and mypy (31 source files)
 pass. Wheel and source distributions build and pass `twine check`.
+The built wheel also installs and exposes its CLI in an isolated environment.
+GitHub CI passes on Python 3.11, 3.12 and 3.13;
+the [recorded run](docs/results/ci_validation.json) identifies the verified commit.
 
 ## Implemented and tested
 
@@ -60,9 +63,9 @@ step establishes successful pretrained-model adaptation.
 - CUDA bf16/fp16 AMP (including GradScaler), CUDA memory measurements and MPS
   fp32 execution. CPU tests do not establish accelerator compatibility or speed.
 - Optional remote Hugging Face dataset ingestion and activation checkpointing
-  in long pretrained runs.
-- GitHub-hosted CI and PyPI Trusted Publishing require execution/configuration
-  in their respective services; local build checks are recorded separately.
+  in long pretrained runs. CPU-scale activation checkpointing is tested.
+- PyPI Trusted Publishing requires maintainer configuration and an explicit
+  publishing action. It has not been configured or executed here.
 
 ## Not run or not supported
 

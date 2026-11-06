@@ -1,5 +1,5 @@
 {
-  "verified_at_utc": "2026-11-06T12:22:10.333365+00:00",
+  "verified_at_utc": "2026-11-06T12:28:24.338849+00:00",
   "device": "cpu",
   "gpu_used": false,
   "python": "3.13.12",
@@ -13,7 +13,7 @@
     "mypy": "2.4.1"
   },
   "pytest": {
-    "passed": 193,
+    "passed": 197,
     "skipped": 1,
     "skip_reason": "pretrained integration is opt-in; real CPU smoke script executed separately"
   },
@@ -30,5 +30,7 @@
   "full_pretrained_adaptation": "not_run",
   "cuda_validation": "not_run",
   "mps_validation": "not_run",
-  "pypi_publication": "not_run"
+  "pypi_publication": "not_run",
+  "isolated_wheel_install": "passed",
+  "source_commit": "a47ce0df54bda633a1d23c9096f599cc6388c3dc"
 }
