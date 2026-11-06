@@ -22,7 +22,7 @@ Requires Python 3.11+.
 pip install bytepft
 ```
 
-Before the first PyPI release, install from source:
+Or install from source:
 
 ```sh
 pip install git+https://github.com/skundu42/bytepft.git

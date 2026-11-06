@@ -1,7 +1,7 @@
 # BytePFT 0.1.0 status
 
 Last updated: 2026-11-06. CPU and explicitly authorized MPS fp32 validation have been performed.
-Full pretrained adaptation and PyPI publication have not been performed. This is an experimental reference library, with a
+Full pretrained adaptation has not been performed. This is an experimental reference library, with a
 working end-to-end tiny workflow and a real pretrained-backbone integration test.
 It is not a validated reproduction of the full research architecture.
 
@@ -74,9 +74,9 @@ and [pretrained result](docs/results/qwen_mps_smoke.json).
   MPS mixed precision. MPS validation currently covers fp32 only.
 - Optional remote Hugging Face dataset ingestion and activation checkpointing
   in long pretrained runs. CPU-scale activation checkpointing is tested.
-- PyPI Trusted Publishing requires one-time account configuration. Once configured,
-  publishing a GitHub release automatically publishes the version from its tag.
-  A build-only manual dispatch can validate the release without uploading to PyPI.
+- PyPI publishing uses Trusted Publishing: publishing a GitHub release publishes
+  the version from its tag. A build-only manual dispatch validates the release
+  without uploading to PyPI.
 
 ## Not run or not supported
 

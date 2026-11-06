@@ -1,9 +1,8 @@
 # Changelog
 
-## 0.1.0 — Unreleased
+## 0.1.0 — 2026-11-06
 
-Initial experimental release, available from the source checkout. Not published
-to PyPI.
+Initial experimental release of the BytePFT Python library.
 
 ### Added
 

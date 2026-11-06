@@ -8,7 +8,7 @@ PyPI Trusted Publishing. No stored API token is needed.
 ## One-time PyPI setup
 
 Sign in to the PyPI account that should own the package, with two-factor
-authentication enabled. Because the project has not been published yet, add a
+authentication enabled. For a project's first publication, add a
 [pending publisher](https://pypi.org/manage/account/publishing/) with these values:
 
 | Field | Value |
