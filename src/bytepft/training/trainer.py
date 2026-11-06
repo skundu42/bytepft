@@ -261,6 +261,32 @@ class BytePFTTrainer:
         self._source_tokens_seen = state["source_tokens_seen"]
         self._resume_state = state
 
+    def _finalize(
+        self,
+        train_texts: list[str],
+        validation_texts: list[str],
+        output_dir: Path,
+    ) -> None:
+        from bytepft.evaluation.metrics import evaluate_model
+
+        self.model.eval()
+        self.model.metrics["validation" if validation_texts else "train"] = evaluate_model(
+            self.model,
+            validation_texts or train_texts,
+            max_bytes=self.config.max_bytes,
+            batch_size=self.config.batch_size,
+        )
+        self.model.metrics["training_counts"] = {
+            "documents_seen": self._documents_seen,
+            "source_tokens_seen": self._source_tokens_seen
+            if self.config.stage1.mode == "aligned"
+            else None,
+            "data_sha256": self._fingerprint,
+            "seed": self.config.seed,
+        }
+        self.save_checkpoint(output_dir / "checkpoint-final")
+        save_pretrained(self.model, output_dir)
+
     def fit(
         self,
         dataset: Any,
@@ -315,12 +341,18 @@ class BytePFTTrainer:
             torch.manual_seed(self.config.seed)
         if all(
             self.model.training_status[f"{stage}_steps"] >= target
+            or self.model.training_status[stage] == "early_stopped"
             for stage, target in (
                 ("stage1", self.config.stage1.steps),
                 ("stage2", self.config.stage2.steps),
             )
         ):
-            self.model.eval()
+            if self._resume_state is not None:
+                stage = self._resume_state["active_stage"]
+                self._start_stage(stage, getattr(self.config, stage).steps)
+                self._finalize(train_texts, validation_texts, output_dir)
+            else:
+                self.model.eval()
             return self.history
         if self.config.activation_checkpointing:
             self.model.global_adapter.model.gradient_checkpointing_enable()
@@ -329,7 +361,7 @@ class BytePFTTrainer:
             ("stage2", self.config.stage2.steps),
         ):
             completed = self.model.training_status[f"{stage}_steps"]
-            if target <= completed:
+            if target <= completed or self.model.training_status[stage] == "early_stopped":
                 continue
             self._start_stage(stage, target)
             self.model.training_status[stage] = "running"
@@ -397,32 +429,18 @@ class BytePFTTrainer:
                         self._bad_validations = 0
                     else:
                         self._bad_validations += 1
+                patience = self.config.early_stopping_patience
+                should_stop = patience is not None and self._bad_validations >= patience
+                if should_stop:
+                    self.model.training_status[stage] = "early_stopped"
+                    self.model.training_status["trained"] = True
                 if (step + 1) % self.config.checkpoint_interval == 0:
                     self.save_checkpoint(output_dir / f"{stage}-step-{step + 1}")
-                patience = self.config.early_stopping_patience
-                if patience and self._bad_validations >= patience:
-                    self.model.training_status[stage] = "early_stopped"
+                if should_stop:
                     break
             else:
                 self.model.training_status[stage] = "completed"
             self.model.training_status["trained"] = True
             self.save_checkpoint(output_dir / f"{stage}-final")
-        self.model.eval()
-        evaluation = validation_texts or train_texts
-        self.model.metrics["validation" if validation_texts else "train"] = evaluate_model(
-            self.model,
-            evaluation,
-            max_bytes=self.config.max_bytes,
-            batch_size=self.config.batch_size,
-        )
-        self.model.metrics["training_counts"] = {
-            "documents_seen": self._documents_seen,
-            "source_tokens_seen": self._source_tokens_seen
-            if self.config.stage1.mode == "aligned"
-            else None,
-            "data_sha256": self._fingerprint,
-            "seed": self.config.seed,
-        }
-        self.save_checkpoint(output_dir / "checkpoint-final")
-        save_pretrained(self.model, output_dir)
+        self._finalize(train_texts, validation_texts, output_dir)
         return self.history
