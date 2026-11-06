@@ -2,6 +2,7 @@
 
 import os
 import subprocess
+import tomllib
 from pathlib import Path
 
 from packaging.version import InvalidVersion, Version
@@ -22,7 +23,14 @@ def release_version(tag: str) -> str:
 
 def main() -> None:
     value = release_version(os.environ.get("RELEASE_TAG", ""))
-    subprocess.run(["uv", "version", "--no-sync", "--offline", value], check=True)
+    lock_path = Path("uv.lock")
+    before = tomllib.loads(lock_path.read_text(encoding="utf-8"))
+    subprocess.run(["uv", "version", "--no-sync", value], check=True)
+    after = tomllib.loads(lock_path.read_text(encoding="utf-8"))
+    if [p for p in before["package"] if p["name"] != "bytepft"] != [
+        p for p in after["package"] if p["name"] != "bytepft"
+    ]:
+        raise RuntimeError("Version preparation changed dependency pins; review the lock file")
     if output := os.environ.get("GITHUB_OUTPUT"):
         with Path(output).open("a", encoding="utf-8") as handle:
             handle.write(f"version={value}\n")
