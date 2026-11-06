@@ -10,6 +10,7 @@ from typing import Any
 import torch
 
 from bytepft.config import BytePFTTrainingConfig
+from bytepft.exceptions import CompatibilityError
 from bytepft.models.boundaries import fixed_boundaries
 from bytepft.models.byte_model import ByteModel
 from bytepft.serialization import load_pretrained, save_pretrained, write_json
@@ -51,6 +52,17 @@ class BytePFTTrainer:
         self._bad_validations = 0
         self._documents_seen = 0
         self._source_tokens_seen = 0
+        self._amp_dtype = {
+            "fp32": None,
+            "bf16": torch.bfloat16,
+            "fp16": torch.float16,
+        }[model.config.precision]
+        if model.config.precision == "fp16" and model.device.type != "cuda":
+            raise CompatibilityError("fp16 adaptation requires CUDA AMP; use fp32 or CPU bf16")
+        self._scaler = torch.amp.GradScaler(
+            "cuda",
+            enabled=model.device.type == "cuda" and model.config.precision == "fp16",
+        )
 
     def _aligned_forward(self, batch: dict[str, Any]) -> tuple[Any, dict[str, torch.Tensor]]:
         if self.source_tokenizer is None:
@@ -178,6 +190,7 @@ class BytePFTTrainer:
         if self._resume_state and self._resume_state["active_stage"] == stage:
             self._optimizer.load_state_dict(self._resume_state["optimizer"])
             self._scheduler.load_state_dict(self._resume_state["scheduler"])
+            self._scaler.load_state_dict(self._resume_state.get("scaler", {}))
             self._resume_state = None
         self.model.train()
 
@@ -199,7 +212,12 @@ class BytePFTTrainer:
             "bad_validations": self._bad_validations,
             "documents_seen": self._documents_seen,
             "source_tokens_seen": self._source_tokens_seen,
+            "scaler": self._scaler.state_dict(),
         }
+        if self.model.device.type == "cuda":
+            state["device_rng"] = torch.cuda.get_rng_state(self.model.device)
+        elif self.model.device.type == "mps":
+            state["device_rng"] = torch.mps.get_rng_state()
         temporary = path / "trainer_state.pt.tmp"
         torch.save(state, temporary)
         os.replace(temporary, path / "trainer_state.pt")
@@ -221,6 +239,7 @@ class BytePFTTrainer:
             or restored.global_adapter.hf_config != self.model.global_adapter.hf_config
         ):
             raise ValueError("Checkpoint model architecture differs from this trainer")
+        self.model.to(dtype=next(restored.parameters()).dtype)
         self.model.load_state_dict(restored.state_dict())
         self.model.training_status = restored.training_status
         self.model.metrics = restored.metrics
@@ -229,6 +248,11 @@ class BytePFTTrainer:
         if state["fingerprint"] != self._fingerprint:
             raise ValueError("Training/validation documents differ from the resumed checkpoint")
         torch.set_rng_state(state["torch_rng"])
+        if "device_rng" in state:
+            if self.model.device.type == "cuda":
+                torch.cuda.set_rng_state(state["device_rng"], self.model.device)
+            elif self.model.device.type == "mps":
+                torch.mps.set_rng_state(state["device_rng"])
         self._random.setstate(state["batch_rng"])
         self.history = state["history"]
         self._best_validation = state["best_validation"]
@@ -279,6 +303,10 @@ class BytePFTTrainer:
             raise ValueError(
                 "Validation data contains no raw bytes after truncation; increase max_bytes"
             )
+        # AMP keeps master parameters and Adam moments in fp32. This costs more
+        # memory than loading half-precision weights alone, but avoids half-state updates.
+        if self._amp_dtype is not None:
+            self.model.float()
         output_dir = Path(self.config.output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
         if resume_from is not None:
@@ -318,10 +346,15 @@ class BytePFTTrainer:
                             for _ in range(self.config.batch_size)
                         ]
                     )
-                    total, losses, result = self._loss(batch, stage)
+                    with torch.autocast(
+                        device_type=self.model.device.type,
+                        dtype=self._amp_dtype or torch.float32,
+                        enabled=self._amp_dtype is not None,
+                    ):
+                        total, losses, result = self._loss(batch, stage)
                     if not torch.isfinite(total):
                         raise FloatingPointError(f"Nonfinite {stage} loss at step {step + 1}")
-                    (total / self.config.gradient_accumulation_steps).backward()
+                    self._scaler.scale(total / self.config.gradient_accumulation_steps).backward()
                     for name, value in {"loss": total, **losses}.items():
                         observed[name] = (
                             observed.get(name, 0.0)
@@ -339,10 +372,12 @@ class BytePFTTrainer:
                 parameters = [
                     p for p in self.model.parameters() if p.requires_grad and p.grad is not None
                 ]
+                self._scaler.unscale_(self._optimizer)
                 norm = torch.nn.utils.clip_grad_norm_(
                     parameters, self.config.max_grad_norm, error_if_nonfinite=True
                 )
-                self._optimizer.step()
+                self._scaler.step(self._optimizer)
+                self._scaler.update()
                 self._scheduler.step()
                 self.model.training_status[f"{stage}_steps"] = step + 1
                 record = {"stage": stage, "step": step + 1, **observed, "grad_norm": float(norm)}
