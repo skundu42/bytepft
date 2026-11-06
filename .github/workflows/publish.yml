@@ -1,0 +1,71 @@
+name: Build or publish a release
+
+# Publishing requires an explicit maintainer dispatch with publish=true.
+# Configure the PyPI Trusted Publisher for this workflow and the pypi environment.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact project version from pyproject.toml
+        required: true
+        type: string
+      publish:
+        description: Publish checked distributions to PyPI
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+      UV_PYTHON: "3.13"
+      HF_HUB_OFFLINE: "1"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9
+        with:
+          python-version: "3.13"
+      - run: uv sync --frozen
+      - name: Check requested version
+        run: |
+          uv run --frozen python - <<'PY'
+          import os
+          import tomllib
+          from pathlib import Path
+          version = tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"]
+          if os.environ["RELEASE_VERSION"] != version:
+              raise SystemExit("Requested version differs from pyproject.toml")
+          PY
+      - run: uv run --frozen pytest
+      - run: uv run --frozen ruff check .
+      - run: uv run --frozen mypy
+      - run: uv build
+      - run: uvx twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-distributions
+          path: dist/*
+          if-no-files-found: error
+  publish:
+    if: ${{ inputs.publish }}
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/bytepft/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-distributions
+          path: dist/
+      - name: Publish using PyPI Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1

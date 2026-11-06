@@ -1,0 +1,133 @@
+{
+  "experiment": "synthetic overfit with randomly initialized frozen global transformer",
+  "device": "cpu",
+  "gpu_used": false,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "torch_version": "2.15.0",
+  "threads": 2,
+  "seed": 42,
+  "architecture": {
+    "hidden_size": 32,
+    "encoder_layers": 1,
+    "decoder_layers": 1,
+    "bytes_per_patch": 4.0,
+    "boundary_mode": "fixed",
+    "min_patch_size": 1,
+    "max_patch_size": 8,
+    "boundary_threshold": 0.5,
+    "pooling": "last",
+    "architecture": "reference",
+    "precision": "fp32"
+  },
+  "training": {
+    "stage1": {
+      "steps": 100,
+      "mode": "diagnostic",
+      "boundary_weight": 1.0,
+      "embedding_weight": 0.0,
+      "distillation_weight": 0.0,
+      "byte_ce_weight": 1.0,
+      "temperature": 5.0
+    },
+    "stage2": {
+      "steps": 0,
+      "unfreeze_global": false,
+      "global_learning_rate": null
+    },
+    "batch_size": 4,
+    "learning_rate": 0.01,
+    "weight_decay": 0.0,
+    "gradient_accumulation_steps": 1,
+    "max_grad_norm": 1.0,
+    "max_bytes": 32,
+    "validation_fraction": 0.0,
+    "validation_interval": 25,
+    "checkpoint_interval": 100,
+    "early_stopping_patience": null,
+    "warmup_steps": 0,
+    "seed": 42,
+    "output_dir": "outputs/tiny-example",
+    "text_field": "text",
+    "activation_checkpointing": false
+  },
+  "training_seconds": 0.5682346250396222,
+  "initial_byte_nll": 5.689677967744715,
+  "final_byte_nll": 0.002904544420102063,
+  "initial_bits_per_byte": 8.208470188320497,
+  "final_bits_per_byte": 0.004190371830922956,
+  "first_training_loss": 6.435182571411133,
+  "last_training_loss": 0.002891858108341694,
+  "relative_nll_reduction": 0.999489506359311,
+  "generation": {
+    "text": "hello byte world\n",
+    "generated_ids": [
+      32,
+      98,
+      121,
+      116,
+      101,
+      32,
+      119,
+      111,
+      114,
+      108,
+      100,
+      10
+    ],
+    "generated_bytes": 12,
+    "prompt_bytes": 5,
+    "prefill_seconds": 0.0013045830419287086,
+    "time_to_first_byte_seconds": 0.0013521250220946968,
+    "generation_seconds": 0.002141250006388873,
+    "elapsed_seconds": 0.0034458330483175814,
+    "bytes_per_second": 5604.203135642946,
+    "global_calls": 5,
+    "decode_global_calls": 3,
+    "global_calls_per_generated_byte": 0.25,
+    "stopped_on_eos": true,
+    "data_hex": "68656c6c6f206279746520776f726c640a",
+    "incomplete_utf8_suffix_hex": ""
+  },
+  "stats": {
+    "parameters": 54500,
+    "original_parameters": 20672,
+    "new_parameters": 33828,
+    "trainable_parameters": 33828,
+    "input_interface": "UTF-8 bytes 0..255; PAD=256, BOS=257, EOS=258",
+    "output_interface": "259-way reference head; generation suppresses PAD and BOS",
+    "source_model": null,
+    "architecture": "reference",
+    "average_bytes_per_patch": 3.4,
+    "patch_count": 2000,
+    "training": {
+      "stage1_steps": 100,
+      "stage2_steps": 0,
+      "stage1": "completed",
+      "stage2": "not_started",
+      "trained": true,
+      "quality_validated": false
+    },
+    "checkpoint": {
+      "format_version": 1,
+      "bytepft_version": "0.1.0",
+      "saved_at": "2026-11-06T12:18:13.980437+00:00",
+      "source_model": null,
+      "source_revision": null
+    },
+    "metrics": {
+      "train": {
+        "nll": 0.002904544420102063,
+        "bits_per_byte": 0.004190371830922956,
+        "byte_count": 68,
+        "document_count": 4
+      },
+      "training_counts": {
+        "documents_seen": 400,
+        "source_tokens_seen": null,
+        "data_sha256": "d0c73205e6f2a2b987e7827b1e3fd98636368cc68257e53f9e4910749c7e9fc1",
+        "seed": 42
+      }
+    }
+  },
+  "general_language_quality_evaluated": false
+}

@@ -1,0 +1,40 @@
+# Experimental causal reference baseline; full adaptation has not been validated.
+# Intended for explicit --device cuda. Use --precision fp32 for a CPU experiment.
+# This uses n=0 embedding alignment and aligned observed-token event distillation.
+architecture:
+  architecture: reference
+  hidden_size: 128
+  encoder_layers: 2
+  decoder_layers: 4
+  bytes_per_patch: 4.0
+  boundary_mode: learned
+  min_patch_size: 1
+  max_patch_size: 16
+  boundary_threshold: 0.5
+  pooling: last
+  precision: bf16
+training:
+  stage1:
+    steps: 1000
+    mode: aligned
+    boundary_weight: 1.0
+    embedding_weight: 1.0
+    distillation_weight: 1.0
+    byte_ce_weight: 1.0
+    temperature: 5.0
+  stage2:
+    steps: 0
+    unfreeze_global: true
+    global_learning_rate: 0.00001
+  batch_size: 2
+  learning_rate: 0.0001
+  gradient_accumulation_steps: 4
+  max_grad_norm: 1.0
+  max_bytes: 256
+  validation_fraction: 0.1
+  validation_interval: 50
+  checkpoint_interval: 100
+  warmup_steps: 50
+  activation_checkpointing: false
+  seed: 42
+  output_dir: outputs/qwen-byte

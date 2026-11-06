@@ -1,0 +1,33 @@
+# Offline CPU reference experiment. This is synthetic overfitting, not Qwen adaptation.
+architecture:
+  architecture: reference
+  hidden_size: 32
+  encoder_layers: 1
+  decoder_layers: 1
+  bytes_per_patch: 4.0
+  boundary_mode: fixed
+  min_patch_size: 1
+  max_patch_size: 8
+  pooling: last
+  precision: fp32
+training:
+  stage1:
+    steps: 100
+    mode: diagnostic
+    boundary_weight: 1.0
+    embedding_weight: 0.0
+    distillation_weight: 0.0
+    byte_ce_weight: 1.0
+  stage2:
+    steps: 0
+    unfreeze_global: false
+  batch_size: 4
+  learning_rate: 0.01
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+  max_bytes: 32
+  validation_fraction: 0.0
+  validation_interval: 25
+  checkpoint_interval: 100
+  seed: 42
+  output_dir: outputs/tiny-example
