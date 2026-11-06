@@ -92,6 +92,7 @@ def load_pretrained(directory: str | Path, *, device: str = "cpu") -> ByteModel:
     except (
         OSError,
         KeyError,
+        ValueError,
         TypeError,
         RuntimeError,
         SafetensorError,

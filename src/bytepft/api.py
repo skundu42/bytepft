@@ -76,7 +76,14 @@ class BytePFT:
             torch.manual_seed(seed)
             adapter = TinyGlobalAdapter(hidden_size=global_hidden_size)
             instance = cls(adapter, config)
-        instance.model.to(resolve_device(device))
+        resolved = resolve_device(device)
+        precision = instance.model.config.precision
+        if precision == "fp16" and resolved.type == "cpu":
+            raise CompatibilityError("fp16 on CPU is unsupported; use fp32 or bf16")
+        if precision == "bf16" and resolved.type == "mps":
+            raise CompatibilityError("The reference GRU path uses fp32 or fp16 on MPS")
+        dtype = {"fp32": torch.float32, "bf16": torch.bfloat16, "fp16": torch.float16}[precision]
+        instance.model.to(device=resolved, dtype=dtype)
         return instance
 
     def configure(self, **settings: Any) -> "BytePFT":

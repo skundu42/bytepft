@@ -75,3 +75,14 @@ def test_training_rejects_zero_raw_bytes_before_updating_weights(tmp_path, docum
     assert model.training_status["stage1_steps"] == 0
     for name, value in model.state_dict().items():
         assert torch.equal(value, before[name])
+
+
+def test_training_rejects_zero_byte_validation_before_updating_weights(tmp_path):
+    model = small_model()
+    trainer = BytePFTTrainer(
+        model,
+        BytePFTTrainingConfig(stage1=Stage1Config(steps=1), batch_size=1, output_dir=str(tmp_path)),
+    )
+    with pytest.raises(ValueError, match="byte"):
+        trainer.fit(["abc"], validation_dataset=[""])
+    assert model.training_status["stage1_steps"] == 0

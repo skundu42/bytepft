@@ -89,6 +89,9 @@ def main(argv: list[str] | None = None) -> int:
             data = yaml.safe_load(Path(args.config).read_text()) if args.config else {}
             if not isinstance(data, dict):
                 raise ValueError("Configuration YAML must be a mapping")
+            for section in ("architecture", "training"):
+                if section in data and not isinstance(data[section], dict):
+                    raise ValueError(f"Configuration section {section!r} must be a mapping")
             unknown = set(data) - {"architecture", "training"}
             if unknown:
                 raise ValueError(f"Unknown config sections: {sorted(unknown)}")
@@ -157,7 +160,14 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 )
         return 0
-    except (ValueError, OSError, RuntimeError, NotImplementedError) as exc:
+    except (
+        ValueError,
+        TypeError,
+        OSError,
+        RuntimeError,
+        NotImplementedError,
+        yaml.YAMLError,
+    ) as exc:
         print(f"bytepft: {exc}", file=sys.stderr)
         return 1
 
