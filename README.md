@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/skundu42/bytepft/actions/workflows/ci.yml/badge.svg)](https://github.com/skundu42/bytepft/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/skundu42/bytepft/blob/main/LICENSE)
 
 **Retrofitting language models, one byte at a time.**
 
