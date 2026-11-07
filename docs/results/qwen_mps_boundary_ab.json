@@ -1,0 +1,1171 @@
+{
+  "purpose": "paired Stage 2 boundary supervision comparison",
+  "source": "Qwen/Qwen3-0.6B-Base",
+  "source_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+  "training_device": "mps",
+  "test_device": "cpu",
+  "compute_budget": {
+    "target_seconds_per_arm": 240.0,
+    "observed_time_difference_seconds": 0.5698614579987407,
+    "time_match_tolerance_seconds": 2.0,
+    "slower_mean_step_seconds_after_equal_update": 0.8820843108974376,
+    "matched_update_count": 150,
+    "matched_sample_sequence_sha256": "147c69ab952ffe1f4d9584062fc4cb550e1656e6471ef7e0d1d61897d29f4f88",
+    "measurement": "Synchronized wall time on the same MPS device. Target preparation, evaluation and checkpoint writes were outside the timed window.",
+    "training_order": [
+      "periodic",
+      "qwen_token_ends"
+    ]
+  },
+  "test_sha256": "87fc6be7720d4fd3dc5e2fe77af755cdc793104755386027472ae6bfc1cfb66c",
+  "prompts_sha256": "3daebcaee267dc31e3650975e994f4f55b1dabf314b5a13a8a196d26959acc50",
+  "starting_bytepft_test": {
+    "nll": 1.8757738740039378,
+    "bits_per_byte": 2.7061696658545604,
+    "byte_count": 16126,
+    "document_count": 128
+  },
+  "prior_bytepft_test": {
+    "nll": 2.355311056291083,
+    "bits_per_byte": 3.3979955806620916,
+    "byte_count": 16126,
+    "document_count": 128
+  },
+  "original_qwen_canonical_test_bpb": 1.4449375270888445,
+  "arms": {
+    "periodic": {
+      "target": "periodic",
+      "training_seconds": 240.0909641670005,
+      "updates": 301,
+      "training_bytes": 137343,
+      "training_patches": 8742,
+      "sample_sequence_sha256": "a448c112f00960d3e4d2110720015f94f7f9c706473d58b0bb35d657ce4f1b4f",
+      "initial_validation": {
+        "bits_per_byte": 2.745632241820197,
+        "byte_count": 4040,
+        "document_count": 32,
+        "boundaries": {
+          "complete_raw_patch_length_histogram": {
+            "16": 250
+          },
+          "mean_complete_raw_patch_bytes": 16.0,
+          "complete_raw_patches_at_cap_fraction": 1.0,
+          "source_boundary_average_precision": 0.2944876009222004,
+          "predicted_positive_fraction": 0.0
+        }
+      },
+      "equal_update": {
+        "updates": 150,
+        "elapsed_training_seconds": 119.11425187500026,
+        "sample_sequence_sha256": "147c69ab952ffe1f4d9584062fc4cb550e1656e6471ef7e0d1d61897d29f4f88",
+        "validation": {
+          "bits_per_byte": 2.759231046928921,
+          "byte_count": 4040,
+          "document_count": 32,
+          "boundaries": {
+            "complete_raw_patch_length_histogram": {
+              "16": 250
+            },
+            "mean_complete_raw_patch_bytes": 16.0,
+            "complete_raw_patches_at_cap_fraction": 1.0,
+            "source_boundary_average_precision": 0.2764695047750799,
+            "predicted_positive_fraction": 0.0
+          }
+        }
+      },
+      "equal_time_validation": {
+        "bits_per_byte": 2.755035972548179,
+        "byte_count": 4040,
+        "document_count": 32,
+        "boundaries": {
+          "complete_raw_patch_length_histogram": {
+            "16": 250
+          },
+          "mean_complete_raw_patch_bytes": 16.0,
+          "complete_raw_patches_at_cap_fraction": 1.0,
+          "source_boundary_average_precision": 0.3055483082924903,
+          "predicted_positive_fraction": 0.0
+        }
+      },
+      "checkpoint_sha256": "9e24f04913eb1b9134ae3eea49cb051ec00ccc7bf41d5ae26805b65831d96ab5",
+      "warm_start_sha256": "3fc8ec85b10a4be88f39aa462fa474204149af557ad0aa40ebd5aa7ac0e24399",
+      "source_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+      "training_config": {
+        "stage1": {
+          "steps": 0,
+          "mode": "diagnostic",
+          "boundary_weight": 1.0,
+          "embedding_weight": 1.0,
+          "distillation_weight": 1.0,
+          "byte_ce_weight": 1.0,
+          "temperature": 5.0
+        },
+        "stage2": {
+          "steps": 2150,
+          "unfreeze_global": true,
+          "global_learning_rate": 1e-05
+        },
+        "batch_size": 2,
+        "learning_rate": 0.001,
+        "weight_decay": 0.0,
+        "gradient_accumulation_steps": 1,
+        "max_grad_norm": 1.0,
+        "max_bytes": 256,
+        "validation_fraction": 0.1,
+        "validation_interval": 100000,
+        "checkpoint_interval": 100000,
+        "early_stopping_patience": null,
+        "warmup_steps": 20,
+        "seed": 44,
+        "text_field": "text",
+        "activation_checkpointing": true
+      },
+      "architecture": {
+        "hidden_size": 128,
+        "encoder_layers": 2,
+        "decoder_layers": 2,
+        "bytes_per_patch": 4.0,
+        "boundary_mode": "learned",
+        "min_patch_size": 1,
+        "max_patch_size": 16,
+        "boundary_threshold": 0.5,
+        "pooling": "last",
+        "architecture": "reference",
+        "precision": "fp32"
+      },
+      "test": {
+        "bits_per_byte": 2.71107543507227,
+        "byte_count": 16126,
+        "document_count": 128,
+        "boundaries": {
+          "complete_raw_patch_length_histogram": {
+            "8": 1,
+            "16": 1004
+          },
+          "mean_complete_raw_patch_bytes": 15.992039800995025,
+          "complete_raw_patches_at_cap_fraction": 0.9990049751243781,
+          "source_boundary_average_precision": 0.3117578026282904,
+          "predicted_positive_fraction": 6.201165819174004e-05
+        }
+      },
+      "generation": [
+        {
+          "source_row_index": 2362,
+          "prompt_bytes": 46,
+          "completion_bytes": 48,
+          "stopped_on_eos": false,
+          "cache_matches_reference": true,
+          "greedy_repetitive": true
+        },
+        {
+          "source_row_index": 3136,
+          "prompt_bytes": 43,
+          "completion_bytes": 48,
+          "stopped_on_eos": false,
+          "cache_matches_reference": true,
+          "greedy_repetitive": true
+        },
+        {
+          "source_row_index": 1818,
+          "prompt_bytes": 45,
+          "completion_bytes": 48,
+          "stopped_on_eos": false,
+          "cache_matches_reference": true,
+          "greedy_repetitive": true
+        },
+        {
+          "source_row_index": 4328,
+          "prompt_bytes": 42,
+          "completion_bytes": 48,
+          "stopped_on_eos": false,
+          "cache_matches_reference": true,
+          "greedy_repetitive": true
+        }
+      ]
+    },
+    "qwen_token_ends": {
+      "target": "qwen_token_ends",
+      "training_seconds": 240.66082562499923,
+      "updates": 267,
+      "training_bytes": 122021,
+      "training_patches": 22583,
+      "sample_sequence_sha256": "280094025067ed752c3f29f6a81759b8543db5fa2a9449d4b7cebb165221cdf6",
+      "initial_validation": {
+        "bits_per_byte": 2.745632241820197,
+        "byte_count": 4040,
+        "document_count": 32,
+        "boundaries": {
+          "complete_raw_patch_length_histogram": {
+            "16": 250
+          },
+          "mean_complete_raw_patch_bytes": 16.0,
+          "complete_raw_patches_at_cap_fraction": 1.0,
+          "source_boundary_average_precision": 0.2944876009222004,
+          "predicted_positive_fraction": 0.0
+        }
+      },
+      "equal_update": {
+        "updates": 150,
+        "elapsed_training_seconds": 137.45696124999904,
+        "sample_sequence_sha256": "147c69ab952ffe1f4d9584062fc4cb550e1656e6471ef7e0d1d61897d29f4f88",
+        "validation": {
+          "bits_per_byte": 2.7717147560343753,
+          "byte_count": 4040,
+          "document_count": 32,
+          "boundaries": {
+            "complete_raw_patch_length_histogram": {
+              "1": 154,
+              "2": 123,
+              "3": 99,
+              "4": 102,
+              "5": 52,
+              "6": 47,
+              "7": 55,
+              "8": 44,
+              "9": 41,
+              "10": 26,
+              "11": 14,
+              "12": 21,
+              "13": 7,
+              "14": 7,
+              "15": 7,
+              "16": 14
+            },
+            "mean_complete_raw_patch_bytes": 4.842558425584256,
+            "complete_raw_patches_at_cap_fraction": 0.017220172201722016,
+            "source_boundary_average_precision": 0.8633200094215743,
+            "predicted_positive_fraction": 0.19851485148514852
+          }
+        }
+      },
+      "equal_time_validation": {
+        "bits_per_byte": 2.745970976124859,
+        "byte_count": 4040,
+        "document_count": 32,
+        "boundaries": {
+          "complete_raw_patch_length_histogram": {
+            "1": 157,
+            "2": 125,
+            "3": 104,
+            "4": 108,
+            "5": 71,
+            "6": 41,
+            "7": 46,
+            "8": 32,
+            "9": 33,
+            "10": 33,
+            "11": 17,
+            "12": 14,
+            "13": 9,
+            "14": 8,
+            "15": 7,
+            "16": 17
+          },
+          "mean_complete_raw_patch_bytes": 4.766423357664234,
+          "complete_raw_patches_at_cap_fraction": 0.02068126520681265,
+          "source_boundary_average_precision": 0.8680237626335745,
+          "predicted_positive_fraction": 0.2
+        }
+      },
+      "checkpoint_sha256": "1f53df893e456bc877086c3eabf6bc49e0374530a70424f216f36b2f273e8286",
+      "warm_start_sha256": "3fc8ec85b10a4be88f39aa462fa474204149af557ad0aa40ebd5aa7ac0e24399",
+      "source_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+      "training_config": {
+        "stage1": {
+          "steps": 0,
+          "mode": "diagnostic",
+          "boundary_weight": 1.0,
+          "embedding_weight": 1.0,
+          "distillation_weight": 1.0,
+          "byte_ce_weight": 1.0,
+          "temperature": 5.0
+        },
+        "stage2": {
+          "steps": 2150,
+          "unfreeze_global": true,
+          "global_learning_rate": 1e-05
+        },
+        "batch_size": 2,
+        "learning_rate": 0.001,
+        "weight_decay": 0.0,
+        "gradient_accumulation_steps": 1,
+        "max_grad_norm": 1.0,
+        "max_bytes": 256,
+        "validation_fraction": 0.1,
+        "validation_interval": 100000,
+        "checkpoint_interval": 100000,
+        "early_stopping_patience": null,
+        "warmup_steps": 20,
+        "seed": 44,
+        "text_field": "text",
+        "activation_checkpointing": true
+      },
+      "architecture": {
+        "hidden_size": 128,
+        "encoder_layers": 2,
+        "decoder_layers": 2,
+        "bytes_per_patch": 4.0,
+        "boundary_mode": "learned",
+        "min_patch_size": 1,
+        "max_patch_size": 16,
+        "boundary_threshold": 0.5,
+        "pooling": "last",
+        "architecture": "reference",
+        "precision": "fp32"
+      },
+      "test": {
+        "bits_per_byte": 2.7312066321788233,
+        "byte_count": 16126,
+        "document_count": 128,
+        "boundaries": {
+          "complete_raw_patch_length_histogram": {
+            "1": 470,
+            "2": 513,
+            "3": 418,
+            "4": 472,
+            "5": 266,
+            "6": 226,
+            "7": 183,
+            "8": 172,
+            "9": 138,
+            "10": 112,
+            "11": 70,
+            "12": 40,
+            "13": 28,
+            "14": 36,
+            "15": 29,
+            "16": 50
+          },
+          "mean_complete_raw_patch_bytes": 4.869996897300652,
+          "complete_raw_patches_at_cap_fraction": 0.015513496742165685,
+          "source_boundary_average_precision": 0.8754057838102971,
+          "predicted_positive_fraction": 0.19756914299888378
+        }
+      },
+      "generation": [
+        {
+          "source_row_index": 2362,
+          "prompt_bytes": 46,
+          "completion_bytes": 48,
+          "stopped_on_eos": false,
+          "cache_matches_reference": true,
+          "greedy_repetitive": true
+        },
+        {
+          "source_row_index": 3136,
+          "prompt_bytes": 43,
+          "completion_bytes": 48,
+          "stopped_on_eos": false,
+          "cache_matches_reference": true,
+          "greedy_repetitive": true
+        },
+        {
+          "source_row_index": 1818,
+          "prompt_bytes": 45,
+          "completion_bytes": 48,
+          "stopped_on_eos": false,
+          "cache_matches_reference": true,
+          "greedy_repetitive": true
+        },
+        {
+          "source_row_index": 4328,
+          "prompt_bytes": 42,
+          "completion_bytes": 48,
+          "stopped_on_eos": false,
+          "cache_matches_reference": true,
+          "greedy_repetitive": true
+        }
+      ]
+    }
+  },
+  "paired_test": {
+    "delta_qwen_token_ends_minus_periodic_bpb": 0.02013119710655333,
+    "paired_document_bootstrap_ci_95_bpb": [
+      0.009130924536320917,
+      0.031315092463234766
+    ],
+    "paired_document_bootstrap_replicates": 10000,
+    "paired_document_bootstrap_seed": 20261107,
+    "document_count": 128,
+    "qwen_token_ends_lower_nll_documents": 46,
+    "periodic_lower_nll_documents": 82,
+    "equal_nll_documents": 0,
+    "per_document": [
+      {
+        "source_row_index": 2362,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 268.1542053222656,
+        "qwen_token_ends_raw_byte_nll": 269.8092346191406
+      },
+      {
+        "source_row_index": 3136,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 231.9452362060547,
+        "qwen_token_ends_raw_byte_nll": 237.0556640625
+      },
+      {
+        "source_row_index": 1818,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 222.8491668701172,
+        "qwen_token_ends_raw_byte_nll": 221.63917541503906
+      },
+      {
+        "source_row_index": 4328,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 209.86207580566406,
+        "qwen_token_ends_raw_byte_nll": 220.41555786132812
+      },
+      {
+        "source_row_index": 2871,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 216.12973022460938,
+        "qwen_token_ends_raw_byte_nll": 216.9412841796875
+      },
+      {
+        "source_row_index": 1684,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 236.2607421875,
+        "qwen_token_ends_raw_byte_nll": 241.95912170410156
+      },
+      {
+        "source_row_index": 1248,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 246.829345703125,
+        "qwen_token_ends_raw_byte_nll": 253.88206481933594
+      },
+      {
+        "source_row_index": 3193,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 230.994384765625,
+        "qwen_token_ends_raw_byte_nll": 229.04415893554688
+      },
+      {
+        "source_row_index": 2345,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 238.77490234375,
+        "qwen_token_ends_raw_byte_nll": 234.72393798828125
+      },
+      {
+        "source_row_index": 2429,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 261.9971923828125,
+        "qwen_token_ends_raw_byte_nll": 262.5960693359375
+      },
+      {
+        "source_row_index": 2698,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 231.9007110595703,
+        "qwen_token_ends_raw_byte_nll": 225.90057373046875
+      },
+      {
+        "source_row_index": 111,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 241.40907287597656,
+        "qwen_token_ends_raw_byte_nll": 246.15997314453125
+      },
+      {
+        "source_row_index": 2375,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 251.53077697753906,
+        "qwen_token_ends_raw_byte_nll": 244.18426513671875
+      },
+      {
+        "source_row_index": 1114,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 251.07174682617188,
+        "qwen_token_ends_raw_byte_nll": 260.69091796875
+      },
+      {
+        "source_row_index": 1783,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 207.0873565673828,
+        "qwen_token_ends_raw_byte_nll": 216.02734375
+      },
+      {
+        "source_row_index": 392,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 215.40110778808594,
+        "qwen_token_ends_raw_byte_nll": 218.02464294433594
+      },
+      {
+        "source_row_index": 4272,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 225.78900146484375,
+        "qwen_token_ends_raw_byte_nll": 231.56808471679688
+      },
+      {
+        "source_row_index": 4127,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 213.27874755859375,
+        "qwen_token_ends_raw_byte_nll": 211.74298095703125
+      },
+      {
+        "source_row_index": 130,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 244.3953094482422,
+        "qwen_token_ends_raw_byte_nll": 257.34552001953125
+      },
+      {
+        "source_row_index": 1313,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 240.63702392578125,
+        "qwen_token_ends_raw_byte_nll": 246.18682861328125
+      },
+      {
+        "source_row_index": 1928,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 290.4407958984375,
+        "qwen_token_ends_raw_byte_nll": 291.4661865234375
+      },
+      {
+        "source_row_index": 179,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 394.69342041015625,
+        "qwen_token_ends_raw_byte_nll": 403.1089172363281
+      },
+      {
+        "source_row_index": 2407,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 228.36624145507812,
+        "qwen_token_ends_raw_byte_nll": 229.97830200195312
+      },
+      {
+        "source_row_index": 1343,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 208.66087341308594,
+        "qwen_token_ends_raw_byte_nll": 215.44668579101562
+      },
+      {
+        "source_row_index": 1842,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 258.00946044921875,
+        "qwen_token_ends_raw_byte_nll": 260.40472412109375
+      },
+      {
+        "source_row_index": 3004,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 213.20310974121094,
+        "qwen_token_ends_raw_byte_nll": 211.86473083496094
+      },
+      {
+        "source_row_index": 1231,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 227.56146240234375,
+        "qwen_token_ends_raw_byte_nll": 230.61639404296875
+      },
+      {
+        "source_row_index": 1633,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 283.87554931640625,
+        "qwen_token_ends_raw_byte_nll": 286.0061340332031
+      },
+      {
+        "source_row_index": 304,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 190.29685974121094,
+        "qwen_token_ends_raw_byte_nll": 191.24977111816406
+      },
+      {
+        "source_row_index": 4066,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 261.02386474609375,
+        "qwen_token_ends_raw_byte_nll": 269.2102966308594
+      },
+      {
+        "source_row_index": 2503,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 227.2660369873047,
+        "qwen_token_ends_raw_byte_nll": 232.13589477539062
+      },
+      {
+        "source_row_index": 1252,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 257.0631408691406,
+        "qwen_token_ends_raw_byte_nll": 258.2725830078125
+      },
+      {
+        "source_row_index": 2456,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 267.4356994628906,
+        "qwen_token_ends_raw_byte_nll": 262.85443115234375
+      },
+      {
+        "source_row_index": 468,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 248.64944458007812,
+        "qwen_token_ends_raw_byte_nll": 247.72779846191406
+      },
+      {
+        "source_row_index": 1433,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 240.16397094726562,
+        "qwen_token_ends_raw_byte_nll": 242.01455688476562
+      },
+      {
+        "source_row_index": 3317,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 227.35586547851562,
+        "qwen_token_ends_raw_byte_nll": 232.4481658935547
+      },
+      {
+        "source_row_index": 1784,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 230.01101684570312,
+        "qwen_token_ends_raw_byte_nll": 231.15533447265625
+      },
+      {
+        "source_row_index": 1124,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 220.5242919921875,
+        "qwen_token_ends_raw_byte_nll": 217.48089599609375
+      },
+      {
+        "source_row_index": 3024,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 232.8511199951172,
+        "qwen_token_ends_raw_byte_nll": 229.3109588623047
+      },
+      {
+        "source_row_index": 2591,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 239.1907501220703,
+        "qwen_token_ends_raw_byte_nll": 241.1387939453125
+      },
+      {
+        "source_row_index": 3481,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 224.6798858642578,
+        "qwen_token_ends_raw_byte_nll": 225.1709747314453
+      },
+      {
+        "source_row_index": 3184,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 224.5353240966797,
+        "qwen_token_ends_raw_byte_nll": 229.58892822265625
+      },
+      {
+        "source_row_index": 1093,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 229.18760681152344,
+        "qwen_token_ends_raw_byte_nll": 234.19436645507812
+      },
+      {
+        "source_row_index": 4333,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 229.27645874023438,
+        "qwen_token_ends_raw_byte_nll": 223.55421447753906
+      },
+      {
+        "source_row_index": 2450,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 263.4998474121094,
+        "qwen_token_ends_raw_byte_nll": 255.0147247314453
+      },
+      {
+        "source_row_index": 3628,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 220.8895721435547,
+        "qwen_token_ends_raw_byte_nll": 221.91273498535156
+      },
+      {
+        "source_row_index": 4001,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 203.26541137695312,
+        "qwen_token_ends_raw_byte_nll": 208.09532165527344
+      },
+      {
+        "source_row_index": 3086,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 259.09344482421875,
+        "qwen_token_ends_raw_byte_nll": 265.7536926269531
+      },
+      {
+        "source_row_index": 2472,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 206.12103271484375,
+        "qwen_token_ends_raw_byte_nll": 210.89694213867188
+      },
+      {
+        "source_row_index": 4145,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 236.63218688964844,
+        "qwen_token_ends_raw_byte_nll": 235.643310546875
+      },
+      {
+        "source_row_index": 621,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 213.415283203125,
+        "qwen_token_ends_raw_byte_nll": 223.4210205078125
+      },
+      {
+        "source_row_index": 2996,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 248.6067352294922,
+        "qwen_token_ends_raw_byte_nll": 243.5908203125
+      },
+      {
+        "source_row_index": 2716,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 245.49981689453125,
+        "qwen_token_ends_raw_byte_nll": 246.9017333984375
+      },
+      {
+        "source_row_index": 714,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 216.90655517578125,
+        "qwen_token_ends_raw_byte_nll": 212.84542846679688
+      },
+      {
+        "source_row_index": 691,
+        "byte_count": 79,
+        "periodic_raw_byte_nll": 143.1414794921875,
+        "qwen_token_ends_raw_byte_nll": 158.3311767578125
+      },
+      {
+        "source_row_index": 1749,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 239.83216857910156,
+        "qwen_token_ends_raw_byte_nll": 239.23573303222656
+      },
+      {
+        "source_row_index": 3262,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 249.87554931640625,
+        "qwen_token_ends_raw_byte_nll": 258.0784606933594
+      },
+      {
+        "source_row_index": 3288,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 196.29302978515625,
+        "qwen_token_ends_raw_byte_nll": 199.58082580566406
+      },
+      {
+        "source_row_index": 603,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 216.890625,
+        "qwen_token_ends_raw_byte_nll": 215.19586181640625
+      },
+      {
+        "source_row_index": 4132,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 239.72203063964844,
+        "qwen_token_ends_raw_byte_nll": 243.19772338867188
+      },
+      {
+        "source_row_index": 888,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 281.36456298828125,
+        "qwen_token_ends_raw_byte_nll": 282.08551025390625
+      },
+      {
+        "source_row_index": 4327,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 239.44830322265625,
+        "qwen_token_ends_raw_byte_nll": 233.45413208007812
+      },
+      {
+        "source_row_index": 2630,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 228.8128204345703,
+        "qwen_token_ends_raw_byte_nll": 231.08262634277344
+      },
+      {
+        "source_row_index": 897,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 263.4343566894531,
+        "qwen_token_ends_raw_byte_nll": 266.6986999511719
+      },
+      {
+        "source_row_index": 3833,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 267.79547119140625,
+        "qwen_token_ends_raw_byte_nll": 269.0237731933594
+      },
+      {
+        "source_row_index": 3740,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 231.02415466308594,
+        "qwen_token_ends_raw_byte_nll": 231.03207397460938
+      },
+      {
+        "source_row_index": 2583,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 252.53395080566406,
+        "qwen_token_ends_raw_byte_nll": 252.80166625976562
+      },
+      {
+        "source_row_index": 210,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 261.573486328125,
+        "qwen_token_ends_raw_byte_nll": 264.2281799316406
+      },
+      {
+        "source_row_index": 3445,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 221.16439819335938,
+        "qwen_token_ends_raw_byte_nll": 213.97296142578125
+      },
+      {
+        "source_row_index": 1901,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 241.66055297851562,
+        "qwen_token_ends_raw_byte_nll": 235.4751739501953
+      },
+      {
+        "source_row_index": 2624,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 231.7548370361328,
+        "qwen_token_ends_raw_byte_nll": 224.86178588867188
+      },
+      {
+        "source_row_index": 1316,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 254.5964813232422,
+        "qwen_token_ends_raw_byte_nll": 255.42124938964844
+      },
+      {
+        "source_row_index": 4313,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 260.30352783203125,
+        "qwen_token_ends_raw_byte_nll": 260.0704650878906
+      },
+      {
+        "source_row_index": 284,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 228.07931518554688,
+        "qwen_token_ends_raw_byte_nll": 226.2147979736328
+      },
+      {
+        "source_row_index": 2865,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 228.35287475585938,
+        "qwen_token_ends_raw_byte_nll": 228.10760498046875
+      },
+      {
+        "source_row_index": 502,
+        "byte_count": 79,
+        "periodic_raw_byte_nll": 185.20252990722656,
+        "qwen_token_ends_raw_byte_nll": 190.8747100830078
+      },
+      {
+        "source_row_index": 2877,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 232.24269104003906,
+        "qwen_token_ends_raw_byte_nll": 232.05465698242188
+      },
+      {
+        "source_row_index": 1236,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 209.80902099609375,
+        "qwen_token_ends_raw_byte_nll": 202.65841674804688
+      },
+      {
+        "source_row_index": 3011,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 217.62106323242188,
+        "qwen_token_ends_raw_byte_nll": 216.03298950195312
+      },
+      {
+        "source_row_index": 3907,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 262.0653991699219,
+        "qwen_token_ends_raw_byte_nll": 255.68905639648438
+      },
+      {
+        "source_row_index": 797,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 245.5274200439453,
+        "qwen_token_ends_raw_byte_nll": 262.3330078125
+      },
+      {
+        "source_row_index": 1513,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 258.244873046875,
+        "qwen_token_ends_raw_byte_nll": 252.7276153564453
+      },
+      {
+        "source_row_index": 1122,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 208.69464111328125,
+        "qwen_token_ends_raw_byte_nll": 215.86965942382812
+      },
+      {
+        "source_row_index": 1330,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 270.0275573730469,
+        "qwen_token_ends_raw_byte_nll": 265.9254150390625
+      },
+      {
+        "source_row_index": 2338,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 262.38177490234375,
+        "qwen_token_ends_raw_byte_nll": 269.7356872558594
+      },
+      {
+        "source_row_index": 1002,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 245.19703674316406,
+        "qwen_token_ends_raw_byte_nll": 256.22210693359375
+      },
+      {
+        "source_row_index": 2036,
+        "byte_count": 76,
+        "periodic_raw_byte_nll": 151.94354248046875,
+        "qwen_token_ends_raw_byte_nll": 153.1546173095703
+      },
+      {
+        "source_row_index": 4153,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 208.87374877929688,
+        "qwen_token_ends_raw_byte_nll": 204.43125915527344
+      },
+      {
+        "source_row_index": 3187,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 234.66346740722656,
+        "qwen_token_ends_raw_byte_nll": 235.24020385742188
+      },
+      {
+        "source_row_index": 2531,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 230.1312255859375,
+        "qwen_token_ends_raw_byte_nll": 222.9115447998047
+      },
+      {
+        "source_row_index": 553,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 195.86260986328125,
+        "qwen_token_ends_raw_byte_nll": 204.15255737304688
+      },
+      {
+        "source_row_index": 68,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 251.57241821289062,
+        "qwen_token_ends_raw_byte_nll": 257.6904296875
+      },
+      {
+        "source_row_index": 3137,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 223.7698516845703,
+        "qwen_token_ends_raw_byte_nll": 225.447998046875
+      },
+      {
+        "source_row_index": 1197,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 337.68206787109375,
+        "qwen_token_ends_raw_byte_nll": 340.0259094238281
+      },
+      {
+        "source_row_index": 896,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 268.705078125,
+        "qwen_token_ends_raw_byte_nll": 264.18096923828125
+      },
+      {
+        "source_row_index": 1718,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 254.01295471191406,
+        "qwen_token_ends_raw_byte_nll": 261.52960205078125
+      },
+      {
+        "source_row_index": 1177,
+        "byte_count": 64,
+        "periodic_raw_byte_nll": 152.1883087158203,
+        "qwen_token_ends_raw_byte_nll": 150.09939575195312
+      },
+      {
+        "source_row_index": 2918,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 251.86495971679688,
+        "qwen_token_ends_raw_byte_nll": 260.06005859375
+      },
+      {
+        "source_row_index": 4341,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 230.24301147460938,
+        "qwen_token_ends_raw_byte_nll": 224.57293701171875
+      },
+      {
+        "source_row_index": 1673,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 255.27249145507812,
+        "qwen_token_ends_raw_byte_nll": 251.5724334716797
+      },
+      {
+        "source_row_index": 3438,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 281.109130859375,
+        "qwen_token_ends_raw_byte_nll": 294.94097900390625
+      },
+      {
+        "source_row_index": 1251,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 242.05294799804688,
+        "qwen_token_ends_raw_byte_nll": 245.14500427246094
+      },
+      {
+        "source_row_index": 4162,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 237.7903289794922,
+        "qwen_token_ends_raw_byte_nll": 230.3509521484375
+      },
+      {
+        "source_row_index": 2519,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 235.2916259765625,
+        "qwen_token_ends_raw_byte_nll": 232.5811004638672
+      },
+      {
+        "source_row_index": 180,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 214.82347106933594,
+        "qwen_token_ends_raw_byte_nll": 217.51028442382812
+      },
+      {
+        "source_row_index": 1267,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 230.21804809570312,
+        "qwen_token_ends_raw_byte_nll": 231.902587890625
+      },
+      {
+        "source_row_index": 2161,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 247.74099731445312,
+        "qwen_token_ends_raw_byte_nll": 256.50506591796875
+      },
+      {
+        "source_row_index": 3202,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 222.6236114501953,
+        "qwen_token_ends_raw_byte_nll": 240.46104431152344
+      },
+      {
+        "source_row_index": 2484,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 261.4316101074219,
+        "qwen_token_ends_raw_byte_nll": 273.0777893066406
+      },
+      {
+        "source_row_index": 1123,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 247.54071044921875,
+        "qwen_token_ends_raw_byte_nll": 263.585693359375
+      },
+      {
+        "source_row_index": 1536,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 250.73655700683594,
+        "qwen_token_ends_raw_byte_nll": 250.25392150878906
+      },
+      {
+        "source_row_index": 434,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 234.3841094970703,
+        "qwen_token_ends_raw_byte_nll": 235.9275360107422
+      },
+      {
+        "source_row_index": 3462,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 256.3129577636719,
+        "qwen_token_ends_raw_byte_nll": 262.72406005859375
+      },
+      {
+        "source_row_index": 1978,
+        "byte_count": 84,
+        "periodic_raw_byte_nll": 169.75938415527344,
+        "qwen_token_ends_raw_byte_nll": 170.44456481933594
+      },
+      {
+        "source_row_index": 2907,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 222.45481872558594,
+        "qwen_token_ends_raw_byte_nll": 222.5387420654297
+      },
+      {
+        "source_row_index": 1282,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 257.91302490234375,
+        "qwen_token_ends_raw_byte_nll": 258.7303466796875
+      },
+      {
+        "source_row_index": 427,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 208.78472900390625,
+        "qwen_token_ends_raw_byte_nll": 208.79795837402344
+      },
+      {
+        "source_row_index": 2433,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 247.16836547851562,
+        "qwen_token_ends_raw_byte_nll": 246.64035034179688
+      },
+      {
+        "source_row_index": 2262,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 214.9576416015625,
+        "qwen_token_ends_raw_byte_nll": 208.3006134033203
+      },
+      {
+        "source_row_index": 2280,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 225.39434814453125,
+        "qwen_token_ends_raw_byte_nll": 228.44276428222656
+      },
+      {
+        "source_row_index": 997,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 253.02667236328125,
+        "qwen_token_ends_raw_byte_nll": 249.78134155273438
+      },
+      {
+        "source_row_index": 1855,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 250.60684204101562,
+        "qwen_token_ends_raw_byte_nll": 246.89651489257812
+      },
+      {
+        "source_row_index": 2699,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 210.220703125,
+        "qwen_token_ends_raw_byte_nll": 200.65554809570312
+      },
+      {
+        "source_row_index": 298,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 259.1777648925781,
+        "qwen_token_ends_raw_byte_nll": 262.0523681640625
+      },
+      {
+        "source_row_index": 378,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 231.00384521484375,
+        "qwen_token_ends_raw_byte_nll": 233.68389892578125
+      },
+      {
+        "source_row_index": 1257,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 233.62286376953125,
+        "qwen_token_ends_raw_byte_nll": 232.5255584716797
+      },
+      {
+        "source_row_index": 63,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 257.3867492675781,
+        "qwen_token_ends_raw_byte_nll": 264.16796875
+      },
+      {
+        "source_row_index": 1138,
+        "byte_count": 128,
+        "periodic_raw_byte_nll": 224.02711486816406,
+        "qwen_token_ends_raw_byte_nll": 230.2435302734375
+      }
+    ]
+  },
+  "experiment_date": "2026-11-07",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "torch": "2.15.0",
+  "mps_operator_fallback_enabled": false,
+  "bootstrap_scope": "Test excerpt variation for one seeded pair of training runs.",
+  "run_sha256": "d00ca9940cab47cc3e21572eef187377cd50c0146b650b49fdac43a039f52317",
+  "score_ab_sha256": "35d8ae6ff24836e36b002b5d8a4f781fe19844591fcd05cffb3c70e00857aa39"
+}

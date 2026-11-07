@@ -101,6 +101,19 @@ agreed within 0.000001 bits per byte. Greedy generation remained repetitive,
 and all 250 complete raw-byte patches on the validation split reached the
 16-byte limit. [Expanded-data run report](docs/results/qwen_mps_expanded.json)
 
+A time-matched Stage 2 comparison warm-started both arms from the expanded-data
+checkpoint. One arm used periodic labels and the other used Qwen token ends
+as supervision for the same causal boundary predictor. The periodic and Qwen
+arms completed 301 and 267 updates, respectively, in about 240 seconds each.
+On the same 128 test excerpts they scored **2.711** and **2.731** bits per byte.
+The Qwen-label arm's paired difference was **+0.020** bits per byte, with a
+95% document bootstrap interval of **+0.009 to +0.031** for this one seeded pair.
+
+Qwen supervision reduced the mean complete test patch from 15.99 to 4.87 bytes
+and the share hitting the 16-byte cap from 99.9% to 1.6%. Both checkpoints
+still generated repetitive text on all four prompts. Cached and uncached
+generation matched after offline reload. [Boundary comparison report](docs/results/qwen_mps_boundary_ab.json)
+
 ## Implemented but unvalidated here
 
 - CUDA bf16/fp16 AMP (including GradScaler), CUDA memory measurements and
