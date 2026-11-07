@@ -1,8 +1,8 @@
 # BytePFT 0.1.0 status
 
-Last updated: 2026-11-06. CPU and explicitly authorized MPS fp32 validation have been performed.
-Full pretrained adaptation has not been performed. This is an experimental reference library, with a
-working end-to-end tiny workflow and a real pretrained-backbone integration test.
+Last updated: 2026-11-07. CPU and explicitly authorized MPS fp32 validation have been performed.
+The experimental reference library has a working tiny workflow and a bounded
+CPU pilot that completed both adaptation stages on a real pretrained Qwen backbone.
 It is not a validated reproduction of the full research architecture.
 
 Latest CPU verification: **209 tests passed, 9 explicit GPU/pretrained cases skipped**.
@@ -61,11 +61,22 @@ Actual source-tokenizer alignment was also checked on multilingual text, split
 UTF-8 code points, emoji, whitespace and NUL. Neither this nor a single gradient
 step establishes successful pretrained-model adaptation.
 
+The [CPU adaptation pilot](docs/results/qwen_cpu_adaptation_pilot.json) completed
+eight aligned Stage 1 steps and three unfrozen Stage 2 steps on Qwen3-0.6B-Base.
+A sampled attention weight was identical to the source after Stage 1 and changed
+after Stage 2. Offline reload reproduced the logits exactly. Cached and reference
+generation agreed on three prompts, and the CLI reproduced the held-out score
+and a greedy sample. On four disjoint hand-written test documents (175 bytes),
+bits per byte went from **8.285** at initialization to **8.076** after Stage 1
+and **7.506** after Stage 2. Original Qwen scored **1.441** along its canonical
+tokenization, normalized over the same bytes. Pilot completions were repetitive
+or contained invalid UTF-8.
+
 An explicitly authorized **MPS fp32** run passed eight dedicated GPU cases and
 the combined 205-test suite with CPU fallback disabled. Tiny training byte NLL
 fell from **5.762887 to 0.001340**. Real Qwen3-0.6B-Base also passed a frozen-global
-gradient step and exact save/load on MPS. Full pretrained Stage 2 and adaptation
-remain unrun. See the [MPS guide](docs/mps.md), [test report](docs/results/mps_validation.json)
+gradient step and exact save/load on MPS. Pretrained Stage 2 remains unrun on
+MPS. See the [MPS guide](docs/mps.md), [test report](docs/results/mps_validation.json)
 and [pretrained result](docs/results/qwen_mps_smoke.json).
 
 ## Implemented but unvalidated here
@@ -80,8 +91,8 @@ and [pretrained result](docs/results/qwen_mps_smoke.json).
 
 ## Not run or not supported
 
-- Full Qwen adaptation, retained-capability evaluation, code-completion or
-  character-reasoning quality suites, and matched source-model benchmarks.
+- Sustained Qwen adaptation, retained-capability evaluation, code-completion or
+  character-reasoning quality suites, and matched source-model speed benchmarks.
 - The research mLSTM implementation, noncausal prefill boundaries, fused
   byte/boundary output, suffix embedding augmentation and n=4 alignment.
 - Non-Qwen3 adapters, optimized kernels, batched generation, distributed

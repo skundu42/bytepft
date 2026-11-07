@@ -1,0 +1,139 @@
+{
+  "purpose": "bounded engineering pilot on hand-written, disjoint text",
+  "device": "cpu",
+  "torch": "2.15.0",
+  "source": "Qwen/Qwen3-0.6B-Base",
+  "source_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+  "source_score": {
+    "canonical_token_path_bits_per_byte": 1.4411564035081883,
+    "tokens": 52,
+    "byte_count": 175,
+    "method": "Cross entropy along the original model's canonical token sequence after BOS, excluding EOS, divided by the UTF-8 byte count and ln(2)."
+  },
+  "before_training": {
+    "nll": 5.7425986153738835,
+    "bits_per_byte": 8.28481854421573,
+    "byte_count": 175,
+    "document_count": 4
+  },
+  "after_stage1": {
+    "nll": 5.597903703962054,
+    "bits_per_byte": 8.076067913080015,
+    "byte_count": 175,
+    "document_count": 4
+  },
+  "after_stage2": {
+    "nll": 5.2026845005580356,
+    "bits_per_byte": 7.505887128264951,
+    "byte_count": 175,
+    "document_count": 4
+  },
+  "training_config": {
+    "stage1": {
+      "steps": 8,
+      "mode": "aligned",
+      "boundary_weight": 1.0,
+      "embedding_weight": 1.0,
+      "distillation_weight": 1.0,
+      "byte_ce_weight": 1.0,
+      "temperature": 5.0
+    },
+    "stage2": {
+      "steps": 3,
+      "unfreeze_global": true,
+      "global_learning_rate": 1e-05
+    },
+    "batch_size": 1,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "gradient_accumulation_steps": 1,
+    "max_grad_norm": 1.0,
+    "max_bytes": 64,
+    "validation_fraction": 0.1,
+    "validation_interval": 4,
+    "checkpoint_interval": 1000,
+    "early_stopping_patience": null,
+    "warmup_steps": 0,
+    "seed": 42,
+    "text_field": "text",
+    "activation_checkpointing": true
+  },
+  "load_seconds": 2.0250498750001498,
+  "training_and_checkpoint_seconds": 30.413598916999945,
+  "peak_process_rss_bytes": 7832322048,
+  "training_status": {
+    "stage1_steps": 8,
+    "stage2_steps": 3,
+    "stage1": "completed",
+    "stage2": "completed",
+    "trained": true,
+    "quality_validated": false
+  },
+  "checked_source_parameter_frozen_stage1_and_updated_stage2": "layers.0.self_attn.q_proj.weight",
+  "offline_reload_exact_logits": true,
+  "generation": [
+    {
+      "prompt": "The river",
+      "text": "The river�           ",
+      "generated_bytes": 12,
+      "raw_hex": "546865207269766572e42020202020202020202020",
+      "cache_matches_reference": true
+    },
+    {
+      "prompt": "El gato",
+      "text": "El gatossssssssssss",
+      "generated_bytes": 12,
+      "raw_hex": "456c206761746f737373737373737373737373",
+      "cache_matches_reference": true
+    },
+    {
+      "prompt": "雨のあと",
+      "text": "雨のあとf�f�l�  �lll",
+      "generated_bytes": 12,
+      "raw_hex": "e99ba8e381aee38182e381a8668166b26cf82020f86c6c6c",
+      "cache_matches_reference": true
+    }
+  ],
+  "architecture": {
+    "hidden_size": 32,
+    "encoder_layers": 1,
+    "decoder_layers": 1,
+    "bytes_per_patch": 4.0,
+    "boundary_mode": "learned",
+    "min_patch_size": 1,
+    "max_patch_size": 16,
+    "boundary_threshold": 0.5,
+    "pooling": "last",
+    "architecture": "reference",
+    "precision": "fp32"
+  },
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "torch_threads": 4,
+  "experiment_date": "2026-11-07",
+  "corpus": {
+    "train": [
+      "The ferry crossed the harbor before sunrise.",
+      "Mira kept a notebook beside the kitchen window.",
+      "A fox followed a narrow trail into the woods.",
+      "The old clock chimed six times in the evening.",
+      "El gato duerme junto a la ventana.",
+      "नीला आसमान और ठंडी हवा।",
+      "山の上に白い雲が見えた。",
+      "On Sunday, Luca repaired a bicycle and rode home."
+    ],
+    "validation": [
+      "A bell rang across the quiet courtyard.",
+      "雨のあと、道は静かだった。"
+    ],
+    "test": [
+      "The gardener carried seeds across the field.",
+      "Nora set a cup of tea beside the lamp.",
+      "El río pasa cerca del mercado.",
+      "आज बारिश के बाद धूप निकली।"
+    ]
+  },
+  "cli": {
+    "held_out_metrics_match": true,
+    "greedy_generation_matches": true
+  }
+}

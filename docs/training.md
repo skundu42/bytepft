@@ -191,8 +191,8 @@ remains the honest status until a separate quality experiment establishes more.
 
 CPU is the default for every public workflow. `device="auto"` explicitly allows
 an available CUDA/MPS accelerator; choose `device="cuda"` or `"mps"` only when you
-intend to use one. CPU and explicit MPS fp32 checks have been run on this device;
-full pretrained adaptation has not been executed.
+intend to use one. Both pretrained stages have run in a bounded CPU fp32 pilot.
+The MPS fp32 validation covers the frozen pretrained backbone and tiny Stage 2.
 
 Evaluate held-out text with `evaluate_model` or `bytepft evaluate`. NLL is summed
 only for raw-byte targets and divided by their count; bits per byte is NLL divided
@@ -203,3 +203,7 @@ perplexity across tokenizers as though it measured the same units.
 The [CPU smoke report](results/qwen_cpu_smoke.json) records one finite frozen-global
 gradient update on the actual base checkpoint and an exact save/load logit
 comparison. It contains no language-quality evaluation or completed adaptation.
+The [CPU adaptation pilot](results/qwen_cpu_adaptation_pilot.json) records the
+training configuration, disjoint hand-written splits, held-out likelihood at
+each stage, and offline inference checks. It used 11 optimizer steps and four
+test documents.
