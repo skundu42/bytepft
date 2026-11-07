@@ -10,9 +10,10 @@ BytePFT is a Python library for adapting pretrained Qwen3 language models to
 UTF-8 bytes. It trains a byte-level encoder and decoder around the existing
 transformer, with patch-based processing and cached byte generation.
 
-BytePFT is experimental. The reference implementation is tested on CPU and Apple
-MPS in fp32; full pretrained adaptation and retained language quality have not yet
-been evaluated. See [project status](https://github.com/skundu42/bytepft/blob/main/STATUS.md) for results and limitations.
+BytePFT is experimental. Both adaptation stages have completed on pretrained
+Qwen3-0.6B-Base in bounded CPU and Apple MPS fp32 runs. On held-out WikiText-2,
+the adapted checkpoint scored substantially worse than original Qwen.
+[Project status](https://github.com/skundu42/bytepft/blob/main/STATUS.md)
 
 ## Installation
 

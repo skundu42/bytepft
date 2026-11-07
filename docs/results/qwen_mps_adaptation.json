@@ -1,0 +1,241 @@
+{
+  "purpose": "bounded two-stage pretrained adaptation on WikiText-2 English prose",
+  "source": "Qwen/Qwen3-0.6B-Base",
+  "source_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "torch": "2.15.0",
+  "training_device": "mps",
+  "evaluation_device": "cpu",
+  "training_config": {
+    "stage1": {
+      "steps": 500,
+      "mode": "aligned",
+      "boundary_weight": 1.0,
+      "embedding_weight": 1.0,
+      "distillation_weight": 1.0,
+      "byte_ce_weight": 1.0,
+      "temperature": 5.0
+    },
+    "stage2": {
+      "steps": 150,
+      "unfreeze_global": true,
+      "global_learning_rate": 1e-05
+    },
+    "batch_size": 1,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "gradient_accumulation_steps": 1,
+    "max_grad_norm": 1.0,
+    "max_bytes": 128,
+    "validation_fraction": 0.1,
+    "validation_interval": 100,
+    "checkpoint_interval": 256,
+    "early_stopping_patience": null,
+    "warmup_steps": 10,
+    "seed": 42,
+    "text_field": "text",
+    "activation_checkpointing": true
+  },
+  "architecture": {
+    "hidden_size": 128,
+    "encoder_layers": 2,
+    "decoder_layers": 2,
+    "bytes_per_patch": 4.0,
+    "boundary_mode": "learned",
+    "min_patch_size": 1,
+    "max_patch_size": 16,
+    "boundary_threshold": 0.5,
+    "pooling": "last",
+    "architecture": "reference",
+    "precision": "fp32"
+  },
+  "training_status": {
+    "stage1_steps": 500,
+    "stage2_steps": 150,
+    "stage1": "completed",
+    "stage2": "completed",
+    "trained": true,
+    "quality_validated": false
+  },
+  "checkpoint_sha256": "e7506ba4566c10407fa22b497fdf698380d50f4050dd7110c7a3b79611b2e7f4",
+  "training_and_checkpoint_seconds": 247.27723229099956,
+  "peak_process_rss_bytes": 6052282368,
+  "mps_recommended_memory_bytes": 14302248960,
+  "mps_allocated_bytes_after_training": 7697678592,
+  "mps_driver_allocated_bytes_after_training": 8241217536,
+  "training_counts": {
+    "documents_seen": 650,
+    "source_tokens_seen": 15318,
+    "data_sha256": "3e5434024d1f13e2f58cf03996339c6f44a126e94b7fd4dc04225cc76b544bbb",
+    "seed": 42
+  },
+  "data": {
+    "dataset": "Salesforce/wikitext",
+    "configuration": "wikitext-2-raw-v1",
+    "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "source_licenses": [
+      "CC-BY-SA-3.0",
+      "GFDL"
+    ],
+    "sources": {
+      "test": {
+        "url": "https://huggingface.co/datasets/Salesforce/wikitext/resolve/b08601e04326c79dfdd32d625aee71d232d685c3/wikitext-2-raw-v1/test-00000-of-00001.parquet",
+        "sha256": "5f1bea067869d04849c0f975a2b29c4ff47d867f484f5010ea5e861eab246d91",
+        "size_bytes": 732610
+      },
+      "validation": {
+        "url": "https://huggingface.co/datasets/Salesforce/wikitext/resolve/b08601e04326c79dfdd32d625aee71d232d685c3/wikitext-2-raw-v1/validation-00000-of-00001.parquet",
+        "sha256": "204929b7ff9d6184953f867dedb860e40aa69c078fc1e54b3baaa8fb28511c4c",
+        "size_bytes": 657209
+      },
+      "train": {
+        "url": "https://huggingface.co/datasets/Salesforce/wikitext/resolve/b08601e04326c79dfdd32d625aee71d232d685c3/wikitext-2-raw-v1/train-00000-of-00001.parquet",
+        "sha256": "e83889baabc497075506f91975be5fac0d45c5290b6b20582c8cd1e853d0c9f7",
+        "size_bytes": 6357543
+      }
+    },
+    "qwen_tokenizer_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+    "tokenizer_config_sha256": "3c04ed3ca964ea2f6b2b5faf0dc4d31aec1cb1e8b4bcf63f402d295046b422b5",
+    "seed": 42,
+    "min_prefix_utf8_bytes": 64,
+    "max_prefix_utf8_bytes": 128,
+    "selection": "Use official splits in test, validation, train order. Skip empty rows, markup headings, invalid Unicode and control characters, and Qwen added-token text. Clip each row to its longest complete UTF-8 prefix within 128 bytes. Skip prefixes shorter than 64 bytes. Order rows by SHA-256 of seed:split:row_index and keep the first unique NFC-normalized, whitespace-trimmed prefixes, without normalizing the emitted text.",
+    "splits": {
+      "test": {
+        "source_rows": 4358,
+        "empty": 1467,
+        "heading": 706,
+        "short": 289,
+        "eligible_before_dedup": 1896,
+        "selected_documents": 128,
+        "selected_bytes": 16126,
+        "path": "test.jsonl",
+        "sha256": "87fc6be7720d4fd3dc5e2fe77af755cdc793104755386027472ae6bfc1cfb66c"
+      },
+      "validation": {
+        "source_rows": 3760,
+        "empty": 1299,
+        "heading": 620,
+        "short": 142,
+        "eligible_before_dedup": 1699,
+        "selected_documents": 32,
+        "selected_bytes": 4040,
+        "path": "validation.jsonl",
+        "sha256": "73c2acb7391ffa91a0c197f85965511123efb240384650b9f981cf03ba7446a5"
+      },
+      "train": {
+        "source_rows": 36718,
+        "empty": 12951,
+        "heading": 6211,
+        "short": 1706,
+        "malformed": 1,
+        "eligible_before_dedup": 15849,
+        "selected_documents": 1024,
+        "selected_bytes": 129494,
+        "path": "train.jsonl",
+        "sha256": "529bdd5f066b76bcee0f4277f5ebd9152e0b812f2d3fa60644c9b459f1f8f276"
+      }
+    },
+    "prompts": {
+      "path": "prompts.jsonl",
+      "sha256": "3daebcaee267dc31e3650975e994f4f55b1dabf314b5a13a8a196d26959acc50",
+      "count": 4,
+      "selection": "First four test prefixes with whole-word prompts up to 48 bytes absent from training text."
+    },
+    "pyarrow_version": "26.0.1",
+    "prepare_script_sha256": "7de75f5b4bf4bef5b6d8b4c06870e7765f2f20a1d246ff06a053aaab231f96bf"
+  },
+  "source_qwen": {
+    "method": "canonical BPE token NLL after BOS, excluding EOS, normalized by UTF-8 bytes",
+    "bits_per_byte": 1.4449375270888445,
+    "tokens": 3818,
+    "bytes": 16126,
+    "document_count": 128
+  },
+  "before_training": {
+    "nll": 5.737493826085398,
+    "bits_per_byte": 8.277453890024448,
+    "byte_count": 16126,
+    "document_count": 128
+  },
+  "after_stage1": {
+    "nll": 2.552898253221215,
+    "bits_per_byte": 3.683053649816344,
+    "byte_count": 16126,
+    "document_count": 128
+  },
+  "after_stage2": {
+    "nll": 2.355311056291083,
+    "bits_per_byte": 3.3979955806620916,
+    "byte_count": 16126,
+    "document_count": 128
+  },
+  "checked_source_parameter_frozen_stage1_and_updated_stage2": "layers.0.self_attn.q_proj.weight",
+  "offline_reload_exact_logits": true,
+  "generation": [
+    {
+      "source_row_index": 2362,
+      "prompt_bytes": 46,
+      "greedy_completion_bytes": 48,
+      "greedy_completion_valid_utf8": true,
+      "greedy_completion_repetitive": true,
+      "greedy_stopped_on_eos": false,
+      "cpu_greedy_cache_matches_reference": true,
+      "mps_greedy_cache_matches_reference": true,
+      "mps_greedy_matches_cpu": true,
+      "mps_seeded_sampling_completion_bytes": 48
+    },
+    {
+      "source_row_index": 3136,
+      "prompt_bytes": 43,
+      "greedy_completion_bytes": 48,
+      "greedy_completion_valid_utf8": true,
+      "greedy_completion_repetitive": true,
+      "greedy_stopped_on_eos": false,
+      "cpu_greedy_cache_matches_reference": true,
+      "mps_greedy_cache_matches_reference": true,
+      "mps_greedy_matches_cpu": true,
+      "mps_seeded_sampling_completion_bytes": 48
+    },
+    {
+      "source_row_index": 1818,
+      "prompt_bytes": 45,
+      "greedy_completion_bytes": 48,
+      "greedy_completion_valid_utf8": true,
+      "greedy_completion_repetitive": true,
+      "greedy_stopped_on_eos": false,
+      "cpu_greedy_cache_matches_reference": true,
+      "mps_greedy_cache_matches_reference": true,
+      "mps_greedy_matches_cpu": true,
+      "mps_seeded_sampling_completion_bytes": 48
+    },
+    {
+      "source_row_index": 4328,
+      "prompt_bytes": 42,
+      "greedy_completion_bytes": 48,
+      "greedy_completion_valid_utf8": true,
+      "greedy_completion_repetitive": true,
+      "greedy_stopped_on_eos": false,
+      "cpu_greedy_cache_matches_reference": true,
+      "mps_greedy_cache_matches_reference": true,
+      "mps_greedy_matches_cpu": true,
+      "mps_seeded_sampling_completion_bytes": 48
+    }
+  ],
+  "experiment_date": "2026-11-07",
+  "torch_threads_for_cpu_evaluation": 4,
+  "run_script_sha256": "3c89c6a47cac379a571a957e68e0079352e8f40ababd44877f040fb3cca27258",
+  "checkpoint_weight_file_bytes": 2387278968,
+  "mps_offline_verification": {
+    "offline_reload_device": "mps",
+    "mps_operator_fallback_enabled": false,
+    "held_out_evaluation": {
+      "nll": 2.3553109276047803,
+      "bits_per_byte": 3.397995395007001,
+      "byte_count": 16126,
+      "document_count": 128
+    },
+    "held_out_bpb_abs_delta_from_cpu": 1.8565509041224004e-07,
+    "final_trainer_state_loadable": true
+  }
+}

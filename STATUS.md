@@ -1,13 +1,13 @@
 # BytePFT 0.1.0 status
 
-Last updated: 2026-11-07. CPU and explicitly authorized MPS fp32 validation have been performed.
-The experimental reference library has a working tiny workflow and a bounded
-CPU pilot that completed both adaptation stages on a real pretrained Qwen backbone.
-It is not a validated reproduction of the full research architecture.
+Last updated: 2026-11-07. The experimental reference library has a working tiny
+workflow and bounded pretrained Qwen runs that completed both adaptation
+stages in fp32 on CPU and Apple MPS.
 
 Latest CPU verification: **209 tests passed, 9 explicit GPU/pretrained cases skipped**.
-The earlier combined CPU/MPS run passed 205 cases, with one pretrained case skipped;
-the real pretrained smoke scripts were executed separately. Ruff and mypy pass.
+The combined CPU/MPS suite passed **217 tests**, with the separate opt-in
+pretrained case skipped. The real pretrained experiments ran separately.
+Ruff and mypy pass.
 Wheel and source distributions build and pass `twine check`.
 The built wheel also installs and exposes its CLI in an isolated environment.
 The previous GitHub matrix passed on Python 3.11, 3.12 and 3.13;
@@ -61,8 +61,8 @@ Actual source-tokenizer alignment was also checked on multilingual text, split
 UTF-8 code points, emoji, whitespace and NUL. Neither this nor a single gradient
 step establishes successful pretrained-model adaptation.
 
-The [CPU adaptation pilot](docs/results/qwen_cpu_adaptation_pilot.json) completed
-eight aligned Stage 1 steps and three unfrozen Stage 2 steps on Qwen3-0.6B-Base.
+The CPU adaptation pilot completed eight aligned Stage 1 steps and three
+unfrozen Stage 2 steps on Qwen3-0.6B-Base.
 A sampled attention weight was identical to the source after Stage 1 and changed
 after Stage 2. Offline reload reproduced the logits exactly. Cached and reference
 generation agreed on three prompts, and the CLI reproduced the held-out score
@@ -70,14 +70,27 @@ and a greedy sample. On four disjoint hand-written test documents (175 bytes),
 bits per byte went from **8.285** at initialization to **8.076** after Stage 1
 and **7.506** after Stage 2. Original Qwen scored **1.441** along its canonical
 tokenization, normalized over the same bytes. Pilot completions were repetitive
-or contained invalid UTF-8.
+or contained invalid UTF-8. [CPU pilot report](docs/results/qwen_cpu_adaptation_pilot.json)
 
-An explicitly authorized **MPS fp32** run passed eight dedicated GPU cases and
+## Observed MPS experiments
+
+An **MPS fp32** validation run passed eight dedicated GPU cases and
 the combined 205-test suite with CPU fallback disabled. Tiny training byte NLL
 fell from **5.762887 to 0.001340**. Real Qwen3-0.6B-Base also passed a frozen-global
-gradient step and exact save/load on MPS. Pretrained Stage 2 remains unrun on
-MPS. See the [MPS guide](docs/mps.md), [test report](docs/results/mps_validation.json)
-and [pretrained result](docs/results/qwen_mps_smoke.json).
+gradient step and exact save/load on MPS. [MPS guide](docs/mps.md) ·
+[Test report](docs/results/mps_validation.json) ·
+[Pretrained smoke report](docs/results/qwen_mps_smoke.json)
+
+A subsequent MPS fp32 run completed **500 aligned Stage 1 steps and 150
+unfrozen Stage 2 steps** on Qwen3-0.6B-Base with operator fallback disabled.
+Training and checkpoint writes took 247.3 seconds on an M3 Pro. On 128 held-out
+WikiText-2 prefixes (16,126 bytes), BytePFT improved from **8.277** bits per byte
+at initialization to **3.683** after Stage 1 and **3.398** after Stage 2.
+Original Qwen scored **1.445** along its canonical tokenization on the same bytes.
+CPU reload reproduced logits exactly. MPS reload matched the CPU likelihood
+within 0.000001 bits per byte, and cached and reference greedy generation agreed
+on all four prompts. Greedy completions repeated common words and seeded samples
+remained incoherent. [MPS adaptation report](docs/results/qwen_mps_adaptation.json)
 
 ## Implemented but unvalidated here
 
@@ -115,6 +128,5 @@ AMP retains fp32 master weights, so GPU memory needs exceed half-weight loading.
 Resumption requires the same configuration and documents; exact numerical
 reproducibility is only tested on the same CPU backend.
 
-Large pretrained adaptation should run on explicitly chosen training hardware.
-No such run has been started on this device. See [research mapping](docs/research.md),
-[architecture](docs/architecture.md) and [training guide](docs/training.md).
+[Research mapping](docs/research.md) · [Architecture](docs/architecture.md) ·
+[Training guide](docs/training.md)
