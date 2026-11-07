@@ -59,3 +59,11 @@ prompts across both devices. All four greedy completions repeated common words.
 Operator fallback was disabled. Byte generation uses CPU sampling and control
 work as part of the reference implementation.
 [Experiment settings and results](results/qwen_mps_adaptation.json)
+
+The expanded-data run reused the trained weights and reset the optimizer for
+1,200 more unfrozen Stage 2 updates. It kept the original validation and test
+excerpts and used two training chunks of up to 256 bytes per update. Training
+and checkpoint writes took 1,016.6 seconds. The final checkpoint had the lowest
+validation loss among the saved candidates and scored 2.706 bits per byte on
+the test set, compared with 3.398 for the previous checkpoint and 1.445 for
+original Qwen. [Expanded-data run report](results/qwen_mps_expanded.json)

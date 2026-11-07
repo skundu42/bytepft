@@ -1,0 +1,257 @@
+{
+  "purpose": "warm-started Stage 2 continuation on expanded WikiText-2 English prose",
+  "source": "Qwen/Qwen3-0.6B-Base",
+  "source_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+  "torch": "2.15.0",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "training_device": "mps",
+  "evaluation_device": "mps",
+  "mps_operator_fallback_enabled": false,
+  "prior_checkpoint_sha256": "e7506ba4566c10407fa22b497fdf698380d50f4050dd7110c7a3b79611b2e7f4",
+  "initial_training_status": {
+    "stage1_steps": 500,
+    "stage2_steps": 150,
+    "stage1": "completed",
+    "stage2": "completed",
+    "trained": true,
+    "quality_validated": false
+  },
+  "architecture": {
+    "hidden_size": 128,
+    "encoder_layers": 2,
+    "decoder_layers": 2,
+    "bytes_per_patch": 4.0,
+    "boundary_mode": "learned",
+    "min_patch_size": 1,
+    "max_patch_size": 16,
+    "boundary_threshold": 0.5,
+    "pooling": "last",
+    "architecture": "reference",
+    "precision": "fp32"
+  },
+  "training_config": {
+    "stage1": {
+      "steps": 0,
+      "mode": "diagnostic",
+      "boundary_weight": 1.0,
+      "embedding_weight": 1.0,
+      "distillation_weight": 1.0,
+      "byte_ce_weight": 1.0,
+      "temperature": 5.0
+    },
+    "stage2": {
+      "steps": 1350,
+      "unfreeze_global": true,
+      "global_learning_rate": 1e-05
+    },
+    "batch_size": 2,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "gradient_accumulation_steps": 1,
+    "max_grad_norm": 1.0,
+    "max_bytes": 256,
+    "validation_fraction": 0.1,
+    "validation_interval": 100,
+    "checkpoint_interval": 500,
+    "early_stopping_patience": null,
+    "warmup_steps": 20,
+    "seed": 43,
+    "text_field": "text",
+    "activation_checkpointing": true
+  },
+  "additional_stage2_optimizer_steps": 1200,
+  "additional_training_bytes": 544107,
+  "additional_training_patches": 34632,
+  "additional_training_counts": {
+    "documents_seen": 2400,
+    "source_tokens_seen": null,
+    "data_sha256": "cb872686cab33cfe656221357a1f5f95b192d8010952e606555f967e4510e74d",
+    "seed": 43
+  },
+  "training_and_checkpoint_seconds": 1016.5881165829996,
+  "checked_transformer_parameter_changed": "layers.0.self_attn.q_proj.weight",
+  "training_corpus": {
+    "dataset": "Salesforce/wikitext",
+    "configuration": "wikitext-2-raw-v1",
+    "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "source_licenses": [
+      "CC-BY-SA-3.0",
+      "GFDL"
+    ],
+    "sources": {
+      "test": {
+        "url": "https://huggingface.co/datasets/Salesforce/wikitext/resolve/b08601e04326c79dfdd32d625aee71d232d685c3/wikitext-2-raw-v1/test-00000-of-00001.parquet",
+        "sha256": "5f1bea067869d04849c0f975a2b29c4ff47d867f484f5010ea5e861eab246d91",
+        "size_bytes": 732610
+      },
+      "validation": {
+        "url": "https://huggingface.co/datasets/Salesforce/wikitext/resolve/b08601e04326c79dfdd32d625aee71d232d685c3/wikitext-2-raw-v1/validation-00000-of-00001.parquet",
+        "sha256": "204929b7ff9d6184953f867dedb860e40aa69c078fc1e54b3baaa8fb28511c4c",
+        "size_bytes": 657209
+      },
+      "train": {
+        "url": "https://huggingface.co/datasets/Salesforce/wikitext/resolve/b08601e04326c79dfdd32d625aee71d232d685c3/wikitext-2-raw-v1/train-00000-of-00001.parquet",
+        "sha256": "e83889baabc497075506f91975be5fac0d45c5290b6b20582c8cd1e853d0c9f7",
+        "size_bytes": 6357543
+      }
+    },
+    "qwen_tokenizer_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+    "tokenizer_config_sha256": "3c04ed3ca964ea2f6b2b5faf0dc4d31aec1cb1e8b4bcf63f402d295046b422b5",
+    "seed": 42,
+    "min_prefix_utf8_bytes": 64,
+    "max_prefix_utf8_bytes": 128,
+    "selection": "All usable official train rows in source order. Skip empty, heading, malformed and reserved-token rows. Chunk each row contiguously up to 256 UTF-8 bytes, preferring a word break in the last quarter. Drop chunks shorter than 64 bytes. NFC-normalize, casefold, and collapse whitespace for deduplication and leakage checks, without normalizing emitted text. Reject source rows containing any held-out excerpt or prompt. Reject chunks that contain or are contained in a held-out excerpt. Preserve the original validation, test, and prompt JSONL files.",
+    "splits": {
+      "test": {
+        "source_rows": 4358,
+        "empty": 1467,
+        "heading": 706,
+        "short": 289,
+        "eligible_before_dedup": 1896,
+        "selected_documents": 128,
+        "selected_bytes": 16126,
+        "path": "test.jsonl",
+        "sha256": "87fc6be7720d4fd3dc5e2fe77af755cdc793104755386027472ae6bfc1cfb66c"
+      },
+      "validation": {
+        "source_rows": 3760,
+        "empty": 1299,
+        "heading": 620,
+        "short": 142,
+        "eligible_before_dedup": 1699,
+        "selected_documents": 32,
+        "selected_bytes": 4040,
+        "path": "validation.jsonl",
+        "sha256": "73c2acb7391ffa91a0c197f85965511123efb240384650b9f981cf03ba7446a5"
+      },
+      "train": {
+        "source_rows": 36718,
+        "empty_rows": 12951,
+        "headings": 6211,
+        "selected_documents": 46444,
+        "selected_bytes": 10559449,
+        "selected_noninitial_chunks": 30603,
+        "short_chunks": 5220,
+        "malformed_rows": 1,
+        "duplicate_chunks": 10,
+        "path": "train.jsonl",
+        "sha256": "91ce69a55388ee9b775750a416765667d66d7d5e163ec5ba8af60064aad601bf"
+      }
+    },
+    "prompts": {
+      "path": "prompts.jsonl",
+      "sha256": "3daebcaee267dc31e3650975e994f4f55b1dabf314b5a13a8a196d26959acc50",
+      "count": 4,
+      "selection": "First four test prefixes with whole-word prompts up to 48 bytes absent from training text."
+    },
+    "pyarrow_version": "26.0.1",
+    "prepare_script_sha256": "264c9894baceeadce31a1a0bf643bfa9b29520bf1831f91d2da7e7eb377e6a35",
+    "train_chunk_min_utf8_bytes": 64,
+    "train_chunk_max_utf8_bytes": 256
+  },
+  "initial_validation": {
+    "nll": 2.3539415718305228,
+    "bits_per_byte": 3.396019832222267,
+    "byte_count": 4040,
+    "document_count": 32
+  },
+  "checkpoint_validation": [
+    {
+      "checkpoint": "checkpoint/stage2-step-500",
+      "stage2_step": 500,
+      "metrics": {
+        "nll": 2.104738209035137,
+        "bits_per_byte": 3.0364953765445106,
+        "byte_count": 4040,
+        "document_count": 32
+      }
+    },
+    {
+      "checkpoint": "checkpoint/stage2-step-1000",
+      "stage2_step": 1000,
+      "metrics": {
+        "nll": 1.9398521801032642,
+        "bits_per_byte": 2.7986151202926237,
+        "byte_count": 4040,
+        "document_count": 32
+      }
+    },
+    {
+      "checkpoint": "checkpoint",
+      "stage2_step": 1350,
+      "metrics": {
+        "nll": 1.9031272661567915,
+        "bits_per_byte": 2.7456322690649735,
+        "byte_count": 4040,
+        "document_count": 32
+      }
+    }
+  ],
+  "selected_checkpoint": "checkpoint",
+  "selected_checkpoint_sha256": "3fc8ec85b10a4be88f39aa462fa474204149af557ad0aa40ebd5aa7ac0e24399",
+  "prior_bytepft_test": {
+    "nll": 2.355311056291083,
+    "bits_per_byte": 3.3979955806620916,
+    "byte_count": 16126,
+    "document_count": 128
+  },
+  "original_qwen_canonical_test_bpb": 1.4449375270888445,
+  "test": {
+    "nll": 1.8757738740039378,
+    "bits_per_byte": 2.7061696658545604,
+    "byte_count": 16126,
+    "document_count": 128
+  },
+  "beat_original_qwen_on_fixed_test": false,
+  "generation": [
+    {
+      "source_row_index": 2362,
+      "prompt_bytes": 46,
+      "greedy_completion_bytes": 48,
+      "greedy_valid_utf8": true,
+      "greedy_repetitive": true,
+      "cache_matches_reference": true
+    },
+    {
+      "source_row_index": 3136,
+      "prompt_bytes": 43,
+      "greedy_completion_bytes": 48,
+      "greedy_valid_utf8": true,
+      "greedy_repetitive": true,
+      "cache_matches_reference": true
+    },
+    {
+      "source_row_index": 1818,
+      "prompt_bytes": 45,
+      "greedy_completion_bytes": 48,
+      "greedy_valid_utf8": true,
+      "greedy_repetitive": true,
+      "cache_matches_reference": true
+    },
+    {
+      "source_row_index": 4328,
+      "prompt_bytes": 42,
+      "greedy_completion_bytes": 48,
+      "greedy_valid_utf8": true,
+      "greedy_repetitive": true,
+      "cache_matches_reference": true
+    }
+  ],
+  "experiment_date": "2026-11-07",
+  "run_script_sha256": "e03d2672b878beec84f761e3e560509e40aa2e9dc63f61b54b68cc039a592d2b",
+  "verification": {
+    "offline_cpu_test": {
+      "nll": 1.875773847509699,
+      "bits_per_byte": 2.7061696276314535,
+      "byte_count": 16126,
+      "document_count": 128
+    },
+    "offline_cpu_bpb_abs_delta_from_mps": 3.822310690182462e-08,
+    "final_trainer_state_loadable": true,
+    "distinct_training_chunks_sampled": 2342,
+    "completed_validation_raw_patch_length_histogram": {
+      "16": 250
+    },
+    "fraction_complete_validation_patches_at_maximum": 1.0
+  }
+}

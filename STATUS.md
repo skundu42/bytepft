@@ -92,6 +92,15 @@ within 0.000001 bits per byte, and cached and reference greedy generation agreed
 on all four prompts. Greedy completions repeated common words and seeded samples
 remained incoherent. [MPS adaptation report](docs/results/qwen_mps_adaptation.json)
 
+An expanded-data continuation warm-started that checkpoint and added **1,200
+unfrozen Stage 2 updates** with a fresh optimizer. The run drew 2,400 samples
+from 46,444 WikiText-2 training chunks and processed 544,107 UTF-8 bytes.
+On the same 128 test excerpts, it improved from **3.398 to 2.706** bits per
+byte. Original Qwen remained ahead at **1.445**. Offline CPU and MPS evaluation
+agreed within 0.000001 bits per byte. Greedy generation remained repetitive,
+and all 250 complete raw-byte patches on the validation split reached the
+16-byte limit. [Expanded-data run report](docs/results/qwen_mps_expanded.json)
+
 ## Implemented but unvalidated here
 
 - CUDA bf16/fp16 AMP (including GradScaler), CUDA memory measurements and
